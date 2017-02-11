@@ -1,0 +1,25 @@
+bitlist
+=======
+
+Minimal pure Python library for working with little-endian list representation of bit strings.
+
+Purpose
+-------
+This library allows programmers to work with a little-endian representation of bit strings within Python. Its purpose is primarily pedagogical, although it can be useful under other circumstances.
+
+Web:           github.com/lapets/bitlist
+Version:       0.0.1.0
+Compatibility: Python 3
+
+Package Installation and Usage
+------------------------------
+
+The package is available on PyPI:
+
+    pip install bitlist
+
+The library can be imported in the usual way:
+
+    import bitlist
+
+Additional examples will be added in the future.
