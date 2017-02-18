@@ -6,7 +6,7 @@
 ##   of bit strings.
 ##
 ##   Web:     github.com/lapets/bitlist
-##   Version: 0.0.2.0
+##   Version: 0.0.3.0
 ##
 ##
 
@@ -22,10 +22,19 @@ class BitListError(Exception):
 
 class bitlist():
     def __init__(self, arg = 0):
-        self.bits = list(reversed([int(b) for b in (arg if type(arg) is str else "{0:b}".format(arg))]))
+        self.bits = [0]
+        self.bits = list(reversed([int(b) for b in "{0:b}".format(arg)])) if type(arg) is int else self.bits
+        self.bits = list(reversed([int(b) for b in arg])) if type(arg) is str and len(arg) > 0 else self.bits
+        self.bits = arg if type(arg) is list and len(arg) > 0 and all(x in [0,1] for x in arg) else self.bits
 
-    def __len__(self):
-        return len(self.bits)
+    def __str__(self):
+        return "bitlist('" + "".join(list(reversed([str(b) for b in self.bits]))) + "')"
+
+    def __repr__(self):
+        return str(self)
+
+    def __int__(self):
+        return int("".join(reversed([str(b) for b in self.bits])), 2)
 
     def __getitem__(self, i):
         return self.bits[i] if i < len(self) else 0
@@ -33,13 +42,7 @@ class bitlist():
     def __setitem__(self, i, b):
         self.bits = [(self[j] if j != i else b) for j in range(0, max(i+1,len(self)))]
 
-    def __int__(self):
-        return int("".join(reversed([str(b) for b in self.bits])), 2)
-
-    def __str__(self):
-        return "bitlist('" + "".join(list(reversed([str(b) for b in self.bits]))) + "')"
-
-    def __repr__(self):
-        return str(self)
+    def __len__(self):
+        return len(self.bits)
 
 ##eof
