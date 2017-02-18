@@ -45,4 +45,19 @@ class bitlist():
     def __len__(self):
         return len(self.bits)
 
+    def __lshift__(self, n):
+        return bitlist(([0] * n) + self.bits)
+
+    def __rshift__(self, n):
+        return bitlist(self.bits[n:len(self.bits)])
+
+    def __eq__(self, other):
+        return int(self) == int(other)
+
+    def __lt__(self, other):
+        return int(self) < int(other)
+
+    def __le__(self, other):
+        return int(self) <= int(other)
+
 ##eof
