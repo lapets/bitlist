@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name             = 'bitlist',
-    version          = '0.0.4.0',
+    version          = '0.0.8.0',
     packages         = ['bitlist',],
     install_requires = [],
     license          = 'MIT License',
