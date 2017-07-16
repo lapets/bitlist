@@ -6,9 +6,11 @@
 ##   of bit strings.
 ##
 ##   Web:     github.com/lapets/bitlist
-##   Version: 0.0.8.0
+##   Version: 0.0.9.0
 ##
 ##
+
+import doctest
 
 ###############################################################################
 ##
@@ -21,6 +23,37 @@ class BitListError(Exception):
         return repr(self.value)
 
 class bitlist():
+    """
+    Class for bit vectors.
+
+    >>> bitlist(123)
+    bitlist('1111011')
+    >>> int(bitlist('1111011'))
+    123
+
+    >>> bitlist('1111011')[2]
+    0
+    >>> bitlist('1111011')[0]
+    1
+    >>> bitlist('1111011')[2] = 1
+
+    >>> bitlist('11') << 2
+    bitlist('1100')
+    >>> bitlist('1111') >> 2
+    bitlist('11')
+
+    >>> bitlist('111') == bitlist(7)
+    True
+    >>> bitlist(123) == bitlist(0)
+    False
+    >>> bitlist(123) > bitlist(0)
+    True
+    >>> bitlist(123) < bitlist(0)
+    False
+    >>> bitlist(123) <= bitlist(0)
+    False
+
+    """
     def __init__(self, arg = 0):
         self.bits = [0]
         self.bits = list(reversed([int(b) for b in "{0:b}".format(arg)])) if type(arg) is int else self.bits
@@ -60,4 +93,7 @@ class bitlist():
     def __le__(self, other):
         return int(self) <= int(other)
 
-##eof
+if __name__ == "__main__": 
+    doctest.testmod()
+
+## eof
