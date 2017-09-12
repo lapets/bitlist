@@ -19,6 +19,13 @@ The library can be imported in the usual way:
     import bitlist
     from bitlist import bitlist
 
+Testing
+-------
+
+The library comes with a number of tests:
+
+    nosetests
+
 Examples
 --------
 An example of usage (a bitwise addition function) is provided  below::

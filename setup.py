@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name             = 'bitlist',
-    version          = '0.0.9.0',
+    version          = '0.1.0.0',
     packages         = ['bitlist',],
     install_requires = [],
     license          = 'MIT',
@@ -11,4 +11,6 @@ setup(
 	author_email     = 'a@lapets.io',
     description      = 'Minimal Python library for working with little-endian list representation of bit strings.',
     long_description = open('README.rst').read(),
+    test_suite       = 'nose.collector',
+    tests_require    = ['nose'],
 )
