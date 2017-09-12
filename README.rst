@@ -10,11 +10,11 @@ This library allows programmers to work with a little-endian representation of b
 
 Package Installation and Usage
 ------------------------------
-The package is available on PyPI:
+The package is available on PyPI::
 
     python -m pip install bitlist
 
-The library can be imported in the usual way:
+The library can be imported in the usual way::
 
     import bitlist
     from bitlist import bitlist
@@ -22,7 +22,7 @@ The library can be imported in the usual way:
 Testing
 -------
 
-The library comes with a number of tests:
+The library comes with a number of tests::
 
     nosetests
 

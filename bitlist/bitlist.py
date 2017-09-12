@@ -6,7 +6,7 @@
 ##   of bit strings.
 ##
 ##   Web:     github.com/lapets/bitlist
-##   Version: 0.1.0.0
+##   Version: 0.1.0.1
 ##
 ##
 

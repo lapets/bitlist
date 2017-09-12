@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name             = 'bitlist',
-    version          = '0.1.0.0',
+    version          = '0.1.0.1',
     packages         = ['bitlist',],
     install_requires = [],
     license          = 'MIT',
