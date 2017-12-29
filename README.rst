@@ -4,6 +4,9 @@ bitlist
 
 Minimal pure Python library for working with little-endian list representation of bit strings.
 
+.. image:: https://badge.fury.io/py/bitlist.svg
+   :target: https://badge.fury.io/py/bitlist
+
 Purpose
 -------
 This library allows programmers to work with a little-endian representation of bit strings within Python. Its purpose is primarily pedagogical, although it can be useful under other circumstances.
