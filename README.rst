@@ -6,6 +6,7 @@ Minimal pure Python library for working with little-endian list representation o
 
 .. image:: https://badge.fury.io/py/bitlist.svg
    :target: https://badge.fury.io/py/bitlist
+   :alt: PyPI version and link.
 
 Purpose
 -------
