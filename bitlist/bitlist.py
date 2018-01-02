@@ -1,12 +1,10 @@
 ###############################################################################
 ## 
 ## bitlist.py
+## https://github.com/lapets/bitlist
 ##
-##   Minimal Python library for working with little-endian list representation
-##   of bit strings.
-##
-##   Web:     github.com/lapets/bitlist
-##   Version: 0.1.0.1
+## Minimal Python library for working with little-endian list representation
+## of bit strings.  
 ##
 ##
 
