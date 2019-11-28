@@ -1,20 +1,14 @@
-###############################################################################
-## 
-## bitlist.py
-## https://github.com/lapets/bitlist
-##
-## Minimal Python library for working with little-endian list representation
-## of bit strings.  
-##
-##
+"""Simple bit string data structure.
+
+Minimal Python library for working with little-endian list
+representation of bit strings.
+"""
 
 import doctest
 
-###############################################################################
-##
-
-# A BitListError is a general-purpose catch-all for any usage error.
 class BitListError(Exception):
+    """A general-purpose catch-all for any usage error."""
+
     def __init__(self, value):
         self.value = value
     def __str__(self):
@@ -53,6 +47,7 @@ class bitlist():
 
     """
     def __init__(self, arg = 0):
+        """Parse argument depending on its type and build bit string."""
         self.bits = [0]
         self.bits = list(reversed([int(b) for b in "{0:b}".format(arg)])) if type(arg) is int else self.bits
         self.bits = list(reversed([int(b) for b in arg])) if type(arg) is str and len(arg) > 0 else self.bits
@@ -93,5 +88,3 @@ class bitlist():
 
 if __name__ == "__main__": 
     doctest.testmod()
-
-## eof
