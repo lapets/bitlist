@@ -9,10 +9,12 @@ import doctest
 class BitListError(Exception):
     """A general-purpose catch-all for any usage error."""
 
-    def __init__(self, value):
-        self.value = value
+    def __init__(self, message):
+        super(BitListError, self).__init__(message)
+        self.message = message
+
     def __str__(self):
-        return repr(self.value)
+        return repr(self.message)
 
 class bitlist():
     """
@@ -46,12 +48,19 @@ class bitlist():
     False
 
     """
-    def __init__(self, arg = 0):
+
+    def __init__(self, arg=0):
         """Parse argument depending on its type and build bit string."""
         self.bits = [0]
-        self.bits = list(reversed([int(b) for b in "{0:b}".format(arg)])) if type(arg) is int else self.bits
-        self.bits = list(reversed([int(b) for b in arg])) if type(arg) is str and len(arg) > 0 else self.bits
-        self.bits = arg if type(arg) is list and len(arg) > 0 and all(x in [0,1] for x in arg) else self.bits
+        self.bits = list(reversed([int(b) for b in "{0:b}".format(arg)]))\
+                    if isinstance(arg, int) else self.bits
+        self.bits = list(reversed([int(b) for b in arg]))\
+                    if isinstance(arg, str) and len(arg) > 0 else self.bits
+        self.bits = arg if\
+                    isinstance(arg, list) and\
+                    len(arg) > 0 and\
+                    all(x in [0, 1] for x in arg)\
+                    else self.bits
 
     def __str__(self):
         return "bitlist('" + "".join(list(reversed([str(b) for b in self.bits]))) + "')"
@@ -66,7 +75,7 @@ class bitlist():
         return self.bits[i] if i < len(self) else 0
 
     def __setitem__(self, i, b):
-        self.bits = [(self[j] if j != i else b) for j in range(0, max(i+1,len(self)))]
+        self.bits = [(self[j] if j != i else b) for j in range(0, max(i+1, len(self)))]
 
     def __len__(self):
         return len(self.bits)
@@ -86,5 +95,5 @@ class bitlist():
     def __le__(self, other):
         return int(self) <= int(other)
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
     doctest.testmod()
