@@ -3,7 +3,7 @@ from unittest import TestCase
 from bitlist import bitlist
 
 def add(x, y):
-    '''Bitwise addition algorithm.'''
+    """Bitwise addition algorithm."""
     k = len(x)
     l = len(y)
     r = bitlist(0)
@@ -15,7 +15,7 @@ def add(x, y):
     return r
 
 def mul(x, y):
-    '''Bitwise multiplication algorithm.'''
+    """Bitwise multiplication algorithm."""
     k = len(x)
     l = len(y)
     r = bitlist()
@@ -26,7 +26,7 @@ def mul(x, y):
     return r
 
 def exp(x, y):
-    '''Bitwise exponentiation algorithm.'''
+    """Bitwise exponentiation algorithm."""
     k = len(x)
     l = len(y)
     r = bitlist(1)
@@ -37,7 +37,7 @@ def exp(x, y):
     return r
 
 def div(x, y):
-    '''Bitwise division algorithm.'''
+    """Bitwise division algorithm."""
     k = len(x)
     l = len(y)
     if y > x:
@@ -78,5 +78,3 @@ class TestBitList(TestCase):
         op = lambda a,b: int(div(bitlist(a), bitlist(b)))
         for (x,y) in [(a//b, op(a,b)) for a in range(0,12) for b in range(1,12)]:
             self.assertEqual(x, y)
-
-## eof
