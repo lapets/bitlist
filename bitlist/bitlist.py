@@ -51,9 +51,14 @@ class bitlist():
 
     >>> bitlist('1111011')[2]
     1
-    >>> bitlist('1111011')[0]
-    1
-    >>> bitlist('1111011')[2] = 1
+    >>> bitlist('0111011')[0]
+    0
+    >>> x = bitlist('1111011')
+    >>> x[2] = 0
+    >>> x
+    bitlist('1101011')
+    >>> bitlist('10101000')[0:5]
+    bitlist('10101')
 
     >>> bitlist('11') << 2
     bitlist('1100')
@@ -168,13 +173,18 @@ class bitlist():
         else:
             raise ValueError("repetition parameter must be an integer")
 
-    def __getitem__(self: bitlist, i: int) -> int:
-        if i < 0: # Support "big-endian" interface using negative indices.
-            return self.bits[abs(i)-1] if abs(i) <= len(self.bits) else 0
-        elif i < len(self.bits):
-            return self.bits[len(self.bits) - 1 - i]
+    def __getitem__(self: bitlist, key):
+        if isinstance(key, int):
+            if key < 0: # Support "big-endian" interface using negative indices.
+                return self.bits[abs(key)-1] if abs(key) <= len(self.bits) else 0
+            elif key < len(self.bits):
+                return self.bits[len(self.bits) - 1 - key]
+            else:
+                raise IndexError("bitlist index out of range")
+        elif isinstance(key, slice):
+            return bitlist(list(reversed((list(reversed(self.bits))[key]))))
         else:
-            raise IndexError("bitlist index out of range")
+            raise TypeError("bitlist indices must be integers or slices")
 
     def __setitem__(self: bitlist, i: int, b):
         if i < 0: # Support "big-endian" interface using negative indices.
@@ -184,6 +194,7 @@ class bitlist():
                     for j in range(-1, min(-len(self.bits), -abs(i)) - 1, -1)
                 ])
         elif i < len(self.bits):
+            i = len(self.bits) - 1 - i
             self.bits =\
                 bytearray([
                     (self.bits[j] if j != i else b) 
