@@ -19,6 +19,12 @@ class bitlist():
     123
     >>> bitlist(bytes([123]))
     bitlist('01111011')
+    >>> bitlist(bytes([123]), 16)
+    bitlist('0000000001111011')
+    >>> bitlist(16, 64)
+    bitlist('0000000000000000000000000000000000000000000000000000000000010000')
+    >>> bitlist(bytes([123]), 4)
+    bitlist('1011')
     >>> bitlist(bytes([123, 123]))
     bitlist('0111101101111011')
     >>> bitlist(bytes([1, 2, 3]))
@@ -33,6 +39,12 @@ class bitlist():
     b'\x80\x81'
     >>> int(bitlist(bytes([128,129]))) == int.from_bytes(bytes([128,129]), 'big')
     True
+
+
+    >>> bitlist(bytes([123])).hex()
+    '7b'
+    >>> bitlist.fromhex('abcd')
+    bitlist('1010101111001101')
 
     >>> bitlist('11') + bitlist('10')
     bitlist('1110')
@@ -80,7 +92,11 @@ class bitlist():
 
     """
 
-    def __init__(self: bitlist, argument = None):
+    @staticmethod
+    def fromhex(hex):
+        return bitlist(bytes.fromhex(hex))
+
+    def __init__(self: bitlist, argument = None, length = None):
         """
         Parse argument depending on its type and build bit string.
         """
@@ -123,6 +139,13 @@ class bitlist():
 
         else:
             raise ValueError("bitlist constructor received unsupported argument")
+            
+        if length is not None:
+            # Pad or truncate the bit vector to ensure the specified length.
+            if length > len(self.bits):
+                self.bits = self.bits + bytes([0] * (length - len(self.bits)))
+            elif length < len(self.bits):
+                self.bits = self.bits[0:length]
 
     def __str__(self: bitlist) -> str:
         return "bitlist('" + "".join(list(reversed([str(b) for b in self.bits]))) + "')"
@@ -135,6 +158,9 @@ class bitlist():
 
     def to_bytes(self: bitlist) -> bytes:
         return bytes(reversed([int(bitlist(list(reversed(bs)))) for bs in parts(self.bits, length=8)]))
+
+    def hex(self):
+        return self.to_bytes().hex()
 
     def __len__(self: bitlist) -> int:
         return len(self.bits)
