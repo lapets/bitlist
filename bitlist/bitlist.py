@@ -149,15 +149,25 @@ class bitlist():
     def __rshift__(self: bitlist, n: int) -> bitlist:
         return bitlist(list(self.bits[n:len(self.bits)]))
 
-    def __eq__(self: bitlist, other: bitlist):
+    def __eq__(self: bitlist, other: bitlist) -> bool:
         # Ignores leading zeros in representation.
         return int(self) == int(other)
 
-    def __lt__(self: bitlist, other: bitlist):
+    def __ne__(self: bitlist, other: bitlist) -> bool:
+        # Ignores leading zeros in representation.
+        return int(self) != int(other)
+
+    def __lt__(self: bitlist, other: bitlist) -> bool:
         return int(self) < int(other)
 
-    def __le__(self: bitlist, other: bitlist):
+    def __le__(self: bitlist, other: bitlist) -> bool:
         return int(self) <= int(other)
+
+    def __gt__(self: bitlist, other: bitlist) -> bool:
+        return int(self) > int(other)
+
+    def __ge__(self: bitlist, other: bitlist) -> bool:
+        return int(self) >= int(other)
 
 if __name__ == "__main__":
     doctest.testmod()
