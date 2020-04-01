@@ -40,14 +40,10 @@ class bitlist():
     bitlist('100000000100000000')
     >>> bitlist('11010001') / 2
     [bitlist('1101'), bitlist('0001')]
-    >>> bitlist('11010001') / [4]
-    [bitlist('1101'), bitlist('0001')]
-    >>> bitlist('11010001') / [2]
-    [bitlist('11'), bitlist('01'), bitlist('00'), bitlist('01')]
-    >>> bitlist('11010001') / [3]
+    >>> bitlist('11010001') / 3
     Traceback (most recent call last):
         ...
-    ValueError: cannot split into parts of equal length given the supplied length
+    ValueError: cannot split into specified number of parts of equal length
 
     >>> bitlist('1111011')[2]
     1
@@ -136,22 +132,23 @@ class bitlist():
     def to_bytes(self: bitlist) -> bytes:
         return bytes(reversed([int(bitlist(list(bs))) for bs in parts(self.bits, length=8)]))
 
-    def __truediv__(self: bitlist, other) -> Sequence[bitlist]:
+    def __len__(self: bitlist) -> int:
+        return len(self.bits)
+
+    def __add__(self: bitlist, other: bitlist) -> bitlist:
+        return bitlist([b for b in other.bits]+[b for b in self.bits])
+
+    def __mul__(self: bitlist, other) -> bitlist:
+        if isinstance(other, int):
+            return bitlist([b for b in self.bits]*other)
+        else:
+            raise ValueError("repetition parameter must be an integer")
+
+    def __truediv__(self: bitlist, other: int) -> Sequence[bitlist]:
         """
-        Break up a bit list into a number of parts or parts of a
-        certain length.
+        Break up a bit list into the specified number of parts.
         """
-        if type(other) is list and len(other) > 0 and type(other[0]) is int:
-            if other[0] <= 0:
-                raise ValueError("can only split into parts of positive non-zero length")
-            elif len(self.bits) % other[0] != 0:
-                raise ValueError("cannot split into parts of equal length given the supplied length")
-            else:
-                return list(reversed([
-                    bitlist(list(p)) 
-                    for p in parts(self.bits, length=other[0])
-                ]))
-        elif type(other) is int:
+        if type(other) is int:
             if other <= 0:
                 raise ValueError("can only split into a positive non-zero number of parts")
             elif len(self.bits) % other != 0:
@@ -162,16 +159,7 @@ class bitlist():
                     for p in parts(self.bits, other)
                 ]))
         else:
-            raise ValueError("splitting parameter is not valid")
-
-    def __add__(self: bitlist, other: bitlist) -> bitlist:
-        return bitlist([b for b in other.bits]+[b for b in self.bits])
-
-    def __mul__(self: bitlist, other) -> bitlist:
-        if isinstance(other, int):
-            return bitlist([b for b in self.bits]*other)
-        else:
-            raise ValueError("repetition parameter must be an integer")
+            raise TypeError("splitting parameter must be an integer")
 
     def __getitem__(self: bitlist, key):
         if isinstance(key, int):
@@ -202,9 +190,6 @@ class bitlist():
                 ])
         else:
             raise IndexError("bitlist index out of range")
-
-    def __len__(self: bitlist) -> int:
-        return len(self.bits)
 
     def __lshift__(self: bitlist, n: int) -> bitlist:
         return bitlist(list([0] * n) + list(self.bits))
