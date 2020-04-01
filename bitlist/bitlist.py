@@ -34,6 +34,10 @@ class bitlist():
     >>> int(bitlist(bytes([128,129]))) == int.from_bytes(bytes([128,129]), 'big')
     True
 
+    >>> bitlist('11') + bitlist('10')
+    bitlist('1110')
+    >>> bitlist(256)*2
+    bitlist('100000000100000000')
     >>> bitlist('11010001') / 2
     [bitlist('1101'), bitlist('0001')]
     >>> bitlist('11010001') / [4]
@@ -154,6 +158,15 @@ class bitlist():
                 ]))
         else:
             raise ValueError("splitting parameter is not valid")
+
+    def __add__(self: bitlist, other: bitlist) -> bitlist:
+        return bitlist([b for b in other.bits]+[b for b in self.bits])
+
+    def __mul__(self: bitlist, other) -> bitlist:
+        if isinstance(other, int):
+            return bitlist([b for b in self.bits]*other)
+        else:
+            raise ValueError("repetition parameter must be an integer")
 
     def __getitem__(self: bitlist, i: int) -> int:
         if i < 0: # Support "big-endian" interface using negative indices.
