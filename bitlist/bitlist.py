@@ -115,7 +115,9 @@ class bitlist():
              all(isinstance(x, int) and x in (0, 1) for x in argument):
             # Convert list of binary digits represented as integers.
             self.bits =\
-                bytearray(argument) if len(argument) > 0 else bytearray([0])
+                bytearray(reversed(argument))\
+                if len(argument) > 0 else\
+                bytearray([0])
 
         else:
             raise ValueError("bitlist constructor received unsupported argument")
@@ -130,17 +132,17 @@ class bitlist():
         return sum(b*(2**i) for (i,b) in enumerate(self.bits))
 
     def to_bytes(self: bitlist) -> bytes:
-        return bytes(reversed([int(bitlist(list(bs))) for bs in parts(self.bits, length=8)]))
+        return bytes(reversed([int(bitlist(list(reversed(bs)))) for bs in parts(self.bits, length=8)]))
 
     def __len__(self: bitlist) -> int:
         return len(self.bits)
 
     def __add__(self: bitlist, other: bitlist) -> bitlist:
-        return bitlist([b for b in other.bits]+[b for b in self.bits])
+        return bitlist(list(reversed([b for b in other.bits]+[b for b in self.bits])))
 
     def __mul__(self: bitlist, other) -> bitlist:
         if isinstance(other, int):
-            return bitlist([b for b in self.bits]*other)
+            return bitlist(list(reversed([b for b in self.bits]))*other)
         else:
             raise ValueError("repetition parameter must be an integer")
 
@@ -155,7 +157,7 @@ class bitlist():
                 raise ValueError("cannot split into specified number of parts of equal length")
             else:
                 return list(reversed([
-                    bitlist(list(p)) 
+                    bitlist(list(reversed(p))) 
                     for p in parts(self.bits, other)
                 ]))
         else:
@@ -192,10 +194,10 @@ class bitlist():
             raise IndexError("bitlist index out of range")
 
     def __lshift__(self: bitlist, n: int) -> bitlist:
-        return bitlist(list([0] * n) + list(self.bits))
+        return bitlist(list(reversed(list([0] * n) + list(self.bits))))
 
     def __rshift__(self: bitlist, n: int) -> bitlist:
-        return bitlist(list(self.bits[n:len(self.bits)]))
+        return bitlist(list(reversed(self.bits[n:len(self.bits)])))
 
     def __eq__(self: bitlist, other: bitlist) -> bool:
         # Ignores leading zeros in representation.
