@@ -5,7 +5,7 @@ with open("README.rst", "r") as fh:
 
 setup(
     name="bitlist",
-    version="0.2.0.0",
+    version="0.2.0.1",
     packages=["bitlist",],
     install_requires=["parts",],
     license="MIT",
