@@ -29,7 +29,7 @@ Testing
 The library comes with a number of tests::
 
     nosetests
-    bitlist/bitlist.py -v
+    python bitlist/bitlist.py -v
 
 Examples
 --------

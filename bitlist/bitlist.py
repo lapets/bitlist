@@ -4,6 +4,8 @@ Minimal Python library for working with little-endian list
 representation of bit vectors.
 """
 
+from __future__ import annotations
+from typing import Sequence
 from parts import parts
 import doctest
 
@@ -60,7 +62,7 @@ class bitlist():
 
     """
 
-    def __init__(self, argument = None):
+    def __init__(self: bitlist, argument = None):
         """
         Parse argument depending on its type and build bit string.
         """
@@ -102,19 +104,19 @@ class bitlist():
         else:
             raise ValueError("bitlist constructor received unsupported argument")
 
-    def __str__(self):
+    def __str__(self: bitlist) -> str:
         return "bitlist('" + "".join(list(reversed([str(b) for b in self.bits]))) + "')"
 
-    def __repr__(self):
+    def __repr__(self: bitlist) -> str:
         return str(self)
 
-    def __int__(self):
+    def __int__(self: bitlist) -> int:
         return sum(b*(2**i) for (i,b) in enumerate(self.bits))
 
-    def to_bytes(self):
+    def to_bytes(self: bitlist) -> bytes:
         return bytes(reversed([int(bitlist(list(bs))) for bs in parts(self.bits, length=8)]))
 
-    def __getitem__(self, i):
+    def __getitem__(self: bitlist, i: int) -> int:
         if i < 0: # Support "big-endian" interface using negative indices.
             return self.bits[abs(i)-1] if abs(i) <= len(self.bits) else 0
         elif i < len(self.bits):
@@ -122,7 +124,7 @@ class bitlist():
         else:
             raise IndexError("bitlist index out of range")
 
-    def __setitem__(self, i, b):
+    def __setitem__(self: bitlist, i: int, b):
         if i < 0: # Support "big-endian" interface using negative indices.
             self.bits =\
                 bytearray([
@@ -138,23 +140,23 @@ class bitlist():
         else:
             raise IndexError("bitlist index out of range")
 
-    def __len__(self):
+    def __len__(self: bitlist) -> int:
         return len(self.bits)
 
-    def __lshift__(self, n):
+    def __lshift__(self: bitlist, n: int) -> bitlist:
         return bitlist(list([0] * n) + list(self.bits))
 
-    def __rshift__(self, n):
+    def __rshift__(self: bitlist, n: int) -> bitlist:
         return bitlist(list(self.bits[n:len(self.bits)]))
 
-    def __eq__(self, other):
+    def __eq__(self: bitlist, other: bitlist):
         # Ignores leading zeros in representation.
         return int(self) == int(other)
 
-    def __lt__(self, other):
+    def __lt__(self: bitlist, other: bitlist):
         return int(self) < int(other)
 
-    def __le__(self, other):
+    def __le__(self: bitlist, other: bitlist):
         return int(self) <= int(other)
 
 if __name__ == "__main__":
