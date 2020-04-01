@@ -4,17 +4,15 @@ from bitlist import bitlist
 
 def add(x, y):
     """Bitwise addition algorithm."""
-    k = len(x)
-    l = len(y)
     r = bitlist(0)
 
     # Upper bound is not inclusive.
     # Use negative indices for big-endian interface.
     carry = 0
-    for i in range(1, max(k, l) + 1):
+    for i in range(1, max(len(x), len(y)) + 1):
         r[-i] = (x[-i] ^ y[-i]) ^ carry
         carry = (x[-i] & y[-i]) | (x[-i] & carry) | (y[-i] & carry)
-    r[-(max(k, l) + 1)] = carry
+    r[-(max(len(x), len(y)) + 1)] = carry
 
     return r
 
