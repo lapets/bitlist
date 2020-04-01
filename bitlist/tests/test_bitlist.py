@@ -7,52 +7,61 @@ def add(x, y):
     k = len(x)
     l = len(y)
     r = bitlist(0)
-    c = 0
-    for i in range(0, max(k, l)): # Upper bound is not inclusive.
-        r[i] = (x[i] ^ y[i]) ^ c
-        c = (x[i] & y[i]) | (x[i] & c) | (y[i] & c)
-    r[max(k, l)] = c
+
+    # Upper bound is not inclusive.
+    # Use negative indices for big-endian interface.
+    carry = 0
+    for i in range(1, max(k, l) + 1):
+        r[-i] = (x[-i] ^ y[-i]) ^ carry
+        carry = (x[-i] & y[-i]) | (x[-i] & carry) | (y[-i] & carry)
+    r[-(max(k, l) + 1)] = carry
+
     return r
 
 def mul(x, y):
     """Bitwise multiplication algorithm."""
-    k = len(x)
-    l = len(y) # Unused but present for consistency.
-    r = bitlist()
-    for i in range(0, k): # Upper bound is not inclusive.
-        if x[i] == 1:
+    r = bitlist(0)
+
+    # Upper bound is not inclusive.
+    # Use negative indices for big-endian interface.
+    for i in range(1, len(x) + 1):
+        if x[-i] == 1:
             r = add(r, y)
         y = y << 1
+
     return r
 
 def exp(x, y):
     """Bitwise exponentiation algorithm."""
-    k = len(x) # Unused but present for consistency.
-    l = len(y)
     r = bitlist(1)
-    for i in range(0, l): # Upper bound is not inclusive.
-        if y[i] == 1:
+
+    # Upper bound is not inclusive.
+    # Use negative indices for big-endian interface.
+    for i in range(1, len(y) + 1):
+        if y[-i] == 1:
             r = mul(r, x)
         x = mul(x, x)
+
     return r
 
 def div(x, y):
     """Bitwise division algorithm."""
-    k = len(x)
-    l = len(y) # Unused but present for consistency.
     if y > x:
         return bitlist(0)
-    for _ in range(0, k):
+
+    for _ in range(0, len(x)):
         y = y << 1
+
     t = bitlist(0)
     q = bitlist(0)
-    p = bitlist(2**k)
-    for _ in range(0, k+1):
+    p = bitlist(2**len(x))
+    for _ in range(0, len(x)+1):
         if add(t, y) <= x:
             t = add(t, y)
             q = add(q, p)
         y = y >> 1
         p = p >> 1
+
     return q
 
 class TestBitList(TestCase):
