@@ -46,13 +46,19 @@ class bitlist():
         if argument is None:
             self.bits = bytearray([0])
         elif isinstance(argument, int):
-            self.bits = bytearray(reversed([int(b) for b in "{0:b}".format(arg)]))
+            self.bits = bytearray(\
+                reversed([int(b) for b in "{0:b}".format(argument)])
+            )
         elif isinstance(argument, str) and len(argument) > 0:
-            bytearray(reversed([int(b) for b in arg]))
+            self.bits = bytearray(reversed([int(b) for b in argument]))
         elif isinstance(argument, bytearray) and\
              len(argument) > 0 and\
-             all(x in [0, 1] for x in argument):
+             all(x in (0, 1) for x in argument):
             self.bits = argument
+        elif isinstance(argument, list) and\
+             len(argument) > 0 and\
+             all(isinstance(x, int) and x in (0, 1) for x in argument):
+            self.bits = bytearray(argument)
         else:
             raise ValueError("bitlist constructor received unsupported argument")
 
