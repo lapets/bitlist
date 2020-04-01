@@ -55,6 +55,8 @@ class bitlist():
     bitlist('1101011')
     >>> bitlist('10101000')[0:5]
     bitlist('10101')
+    >>> bitlist('10101000101010001010100010101000')[0:16]
+    bitlist('1010100010101000')
 
     >>> bitlist('11') << 2
     bitlist('1100')
@@ -172,7 +174,7 @@ class bitlist():
             else:
                 raise IndexError("bitlist index out of range")
         elif isinstance(key, slice):
-            return bitlist(list(reversed((list(reversed(self.bits))[key]))))
+            return bitlist(list(reversed(self.bits))[key])
         else:
             raise TypeError("bitlist indices must be integers or slices")
 
