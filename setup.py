@@ -5,15 +5,15 @@ with open("README.rst", "r") as fh:
 
 setup(
     name="bitlist",
-    version="0.1.0.3",
+    version="0.2.0.0",
     packages=["bitlist",],
     install_requires=[],
     license="MIT",
     url="https://github.com/lapets/bitlist",
     author="Andrei Lapets",
     author_email="a@lapets.io",
-    description="Minimal Python library for working with "+\
-                "little-endian list representation of bit strings.",
+    description="Minimal Python library for working "+\
+                "with bit vectors natively.",
     long_description=long_description,
     long_description_content_type="text/x-rst",
     test_suite="nose.collector",
