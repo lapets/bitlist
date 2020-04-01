@@ -4,6 +4,7 @@ Minimal Python library for working with little-endian list
 representation of bit vectors.
 """
 
+from parts import parts
 import doctest
 
 class bitlist():
@@ -18,6 +19,18 @@ class bitlist():
     bitlist('01111011')
     >>> bitlist(bytes([123, 123]))
     bitlist('0111101101111011')
+    >>> bitlist(bytes([1, 2, 3]))
+    bitlist('000000010000001000000011')
+    >>> int.from_bytes(bitlist('10000000').to_bytes(), 'big')
+    128
+    >>> int.from_bytes(bitlist('1000000010000011').to_bytes(), 'big')
+    32899
+    >>> int.from_bytes(bitlist('110000000').to_bytes(), 'big')
+    384
+    >>> bitlist(129 + 128*256).to_bytes()
+    b'\x80\x81'
+    >>> int(bitlist(bytes([128,129]))) == int.from_bytes(bytes([128,129]), 'big')
+    True
 
     >>> bitlist('1111011')[2]
     1
@@ -76,8 +89,8 @@ class bitlist():
             self.bits =\
                 bytearray([\
                     b
-                    for byte in argument
-                    for b in [(byte >> i) % 2 for i in range(0,8)]
+                    for byte in reversed(argument)
+                    for b in [(byte >> i) % 2 for i in range(0, 8)]
                 ])
 
         elif isinstance(argument, list) and\
@@ -96,7 +109,10 @@ class bitlist():
         return str(self)
 
     def __int__(self):
-        return int("".join(reversed([str(b) for b in self.bits])), 2)
+        return sum(b*(2**i) for (i,b) in enumerate(self.bits))
+
+    def to_bytes(self):
+        return bytes(reversed([int(bitlist(list(bs))) for bs in parts(self.bits, length=8)]))
 
     def __getitem__(self, i):
         if i < 0: # Support "big-endian" interface using negative indices.
