@@ -14,6 +14,10 @@ class bitlist():
     bitlist('1111011')
     >>> int(bitlist('1111011'))
     123
+    >>> bitlist(bytes([123]))
+    bitlist('01111011')
+    >>> bitlist(bytes([123, 123]))
+    bitlist('0111101101111011')
 
     >>> bitlist('1111011')[2]
     1
@@ -30,6 +34,10 @@ class bitlist():
     True
     >>> bitlist(123) == bitlist(0)
     False
+    >>> bitlist(123) == bitlist('0001111011')
+    True
+    >>> bitlist('001') == bitlist('1')
+    True
     >>> bitlist(123) > bitlist(0)
     True
     >>> bitlist(123) < bitlist(0)
@@ -44,25 +52,37 @@ class bitlist():
         Parse argument depending on its type and build bit string.
         """
         if argument is None:
+            # By default, always return the bit vector representing zero.
             self.bits = bytearray([0])
 
         elif isinstance(argument, int):
+            # Convert any integer into its bit representation,
+            # starting with the first non-zero digit.
             self.bits =\
                 bytearray(\
                     reversed([int(b) for b in "{0:b}".format(argument)])
                 )
 
         elif isinstance(argument, str) and len(argument) > 0:
+            # Convert string of binary digit characters.
             self.bits =\
                 bytearray(reversed([int(b) for b in argument]))
 
-        elif isinstance(argument, bytearray) and\
-             all(x in (0, 1) for x in argument):
+        elif isinstance(argument, bytearray) or\
+             isinstance(argument, bytes):
+            # Convert bytes-like object into its constituent bits,
+            # with exactly eight bits per byte (i.e., leading zeros
+            # are included).
             self.bits =\
-                argument if len(argument) > 0 else bytearray([0])
+                bytearray([\
+                    b
+                    for byte in argument
+                    for b in [(byte >> i) % 2 for i in range(0,8)]
+                ])
 
         elif isinstance(argument, list) and\
              all(isinstance(x, int) and x in (0, 1) for x in argument):
+            # Convert list of binary digits represented as integers.
             self.bits =\
                 bytearray(argument) if len(argument) > 0 else bytearray([0])
 
@@ -106,12 +126,13 @@ class bitlist():
         return len(self.bits)
 
     def __lshift__(self, n):
-        return bitlist(bytearray([0] * n) + self.bits)
+        return bitlist(list([0] * n) + list(self.bits))
 
     def __rshift__(self, n):
-        return bitlist(self.bits[n:len(self.bits)])
+        return bitlist(list(self.bits[n:len(self.bits)]))
 
     def __eq__(self, other):
+        # Ignores leading zeros in representation.
         return int(self) == int(other)
 
     def __lt__(self, other):
