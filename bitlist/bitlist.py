@@ -1,7 +1,7 @@
 """Simple bit string data structure.
 
 Minimal Python library for working with little-endian list
-representation of bit strings.
+representation of bit vectors.
 """
 
 import doctest
@@ -51,13 +51,13 @@ class bitlist():
 
     def __init__(self, arg=0):
         """Parse argument depending on its type and build bit string."""
-        self.bits = [0]
-        self.bits = list(reversed([int(b) for b in "{0:b}".format(arg)]))\
+        self.bits = bytearray([0])
+        self.bits = bytearray(reversed([int(b) for b in "{0:b}".format(arg)]))\
                     if isinstance(arg, int) else self.bits
-        self.bits = list(reversed([int(b) for b in arg]))\
+        self.bits = bytearray(reversed([int(b) for b in arg]))\
                     if isinstance(arg, str) and len(arg) > 0 else self.bits
         self.bits = arg if\
-                    isinstance(arg, list) and\
+                    isinstance(arg, bytearray) and\
                     len(arg) > 0 and\
                     all(x in [0, 1] for x in arg)\
                     else self.bits
@@ -75,13 +75,13 @@ class bitlist():
         return self.bits[i] if i < len(self) else 0
 
     def __setitem__(self, i, b):
-        self.bits = [(self[j] if j != i else b) for j in range(0, max(i+1, len(self)))]
+        self.bits = bytearray([(self[j] if j != i else b) for j in range(0, max(i+1, len(self)))])
 
     def __len__(self):
         return len(self.bits)
 
     def __lshift__(self, n):
-        return bitlist(([0] * n) + self.bits)
+        return bitlist(bytearray([0] * n) + self.bits)
 
     def __rshift__(self, n):
         return bitlist(self.bits[n:len(self.bits)])
