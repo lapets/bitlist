@@ -34,6 +34,17 @@ class bitlist():
     >>> int(bitlist(bytes([128,129]))) == int.from_bytes(bytes([128,129]), 'big')
     True
 
+    >>> bitlist('11010001') / 2
+    [bitlist('1101'), bitlist('0001')]
+    >>> bitlist('11010001') / [4]
+    [bitlist('1101'), bitlist('0001')]
+    >>> bitlist('11010001') / [2]
+    [bitlist('11'), bitlist('01'), bitlist('00'), bitlist('01')]
+    >>> bitlist('11010001') / [3]
+    Traceback (most recent call last):
+        ...
+    ValueError: cannot split into parts of equal length given the supplied length
+
     >>> bitlist('1111011')[2]
     1
     >>> bitlist('1111011')[0]
@@ -115,6 +126,34 @@ class bitlist():
 
     def to_bytes(self: bitlist) -> bytes:
         return bytes(reversed([int(bitlist(list(bs))) for bs in parts(self.bits, length=8)]))
+
+    def __truediv__(self: bitlist, other) -> Sequence[bitlist]:
+        """
+        Break up a bit list into a number of parts or parts of a
+        certain length.
+        """
+        if type(other) is list and len(other) > 0 and type(other[0]) is int:
+            if other[0] <= 0:
+                raise ValueError("can only split into parts of positive non-zero length")
+            elif len(self.bits) % other[0] != 0:
+                raise ValueError("cannot split into parts of equal length given the supplied length")
+            else:
+                return list(reversed([
+                    bitlist(list(p)) 
+                    for p in parts(self.bits, length=other[0])
+                ]))
+        elif type(other) is int:
+            if other <= 0:
+                raise ValueError("can only split into a positive non-zero number of parts")
+            elif len(self.bits) % other != 0:
+                raise ValueError("cannot split into specified number of parts of equal length")
+            else:
+                return list(reversed([
+                    bitlist(list(p)) 
+                    for p in parts(self.bits, other)
+                ]))
+        else:
+            raise ValueError("splitting parameter is not valid")
 
     def __getitem__(self: bitlist, i: int) -> int:
         if i < 0: # Support "big-endian" interface using negative indices.
