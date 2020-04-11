@@ -56,10 +56,12 @@ class bitlist():
     bitlist('100000000100000000')
     >>> bitlist('11010001') / 2
     [bitlist('1101'), bitlist('0001')]
+    >>> bitlist('11010001') / [2,6]
+    [bitlist('11'), bitlist('010001')]
+    >>> bitlist('11010001') / {4}
+    [bitlist('1101'), bitlist('0001')]
     >>> bitlist('11010001') / 3
-    Traceback (most recent call last):
-        ...
-    ValueError: cannot split into specified number of parts of equal length
+    [bitlist('110'), bitlist('100'), bitlist('01')]
 
     >>> bitlist('1111011')[2]
     1
@@ -186,18 +188,13 @@ class bitlist():
         """
         Break up a bit list into the specified number of parts.
         """
-        if type(other) is int:
-            if other <= 0:
-                raise ValueError("can only split into a positive non-zero number of parts")
-            elif len(self.bits) % other != 0:
-                raise ValueError("cannot split into specified number of parts of equal length")
-            else:
-                return list(reversed([
-                    bitlist(list(reversed(p))) 
-                    for p in parts(self.bits, other)
-                ]))
+        if type(other) is set and len(other) == 1 and type(list(other)[0]) is int:
+            ps = parts(self.bits, length=list(other)[0])
+        elif type(other) is list:
+            ps = parts(self.bits, length=list(reversed(other)))
         else:
-            raise TypeError("splitting parameter must be an integer")
+            ps = parts(self.bits, other)
+        return list(reversed([bitlist(list(reversed(p))) for p in ps]))
 
     def __getitem__(self: bitlist, key):
         if isinstance(key, int):
