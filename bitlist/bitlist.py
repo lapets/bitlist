@@ -27,6 +27,13 @@ class bitlist():
     bitlist('1010')
     >>> bitlist(bitlist(123), 8)
     bitlist('01111011')
+    >>> xs = bitlist(123, 8)
+    >>> ys = bitlist(xs)
+    >>> ys[0] = 1
+    >>> xs
+    bitlist('01111011')
+    >>> ys
+    bitlist('11111011')
     >>> bitlist(bytes([123]), 4)
     bitlist('1011')
     >>> bitlist(bytes([123, 123]))
@@ -144,8 +151,9 @@ class bitlist():
                 bytearray([0])
 
         elif isinstance(argument, bitlist):
-            # Make constructor idempotent.
-            self.bits = argument.bits
+            # Make constructor idempotent (but have it iterate
+            # to reflect the behavior of `list(...)`.
+            self.bits = bytearray(list(argument.bits))
 
         else:
             raise ValueError("bitlist constructor received unsupported argument")
