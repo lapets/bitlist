@@ -243,19 +243,51 @@ class bitlist():
         else:
             raise IndexError("bitlist index out of range")
 
-    def __lshift__(self: bitlist, n: int) -> bitlist:
+    def __lshift__(self: bitlist, n) -> bitlist:
         """
         >>> bitlist('11') << 2
         bitlist('1100')
+        >>> bitlist('11011') << {0}
+        bitlist('11011')
+        >>> bitlist('11011') << {1}
+        bitlist('10111')
+        >>> bitlist('11011') << {2}
+        bitlist('01111')
+        >>> bitlist('11011') << {3}
+        bitlist('11110')
+        >>> bitlist('11011') << {13}
+        bitlist('11110')
+        >>> bitlist('1') << {13}
+        bitlist('1')
         """
-        return bitlist(list(reversed(list([0] * n) + list(self.bits))))
+        if isinstance(n, set) and len(n) == 1 and isinstance(list(n)[0], int):
+            n = list(n)[0] % len(self) # Allow rotations to wrap around.
+            return bitlist(list(self.bits[n:]) + list(self.bits[:n]))
+        else:
+            return bitlist(list(reversed(list([0] * n) + list(self.bits))))
 
-    def __rshift__(self: bitlist, n: int) -> bitlist:
+    def __rshift__(self: bitlist, n) -> bitlist:
         """
         >>> bitlist('1111') >> 2
         bitlist('11')
+        >>> bitlist('11011') >> {0}
+        bitlist('11011')
+        >>> bitlist('11011') >> {1}
+        bitlist('11101')
+        >>> bitlist('11011') >> {2}
+        bitlist('11110')
+        >>> bitlist('11011') >> {3}
+        bitlist('01111')
+        >>> bitlist('11011') >> {13}
+        bitlist('01111')
+        >>> bitlist('1') >> {13}
+        bitlist('1')
         """
-        return bitlist(list(reversed(self.bits[n:len(self.bits)])))
+        if isinstance(n, set) and len(n) == 1 and isinstance(list(n)[0], int):
+            n = list(n)[0] % len(self) # Allow rotations to wrap around.
+            return bitlist(list(self.bits[-n:]) + list(self.bits[:-n]))
+        else:
+            return bitlist(list(reversed(self.bits[n:])))
 
     def __eq__(self: bitlist, other: bitlist) -> bool:
         """
