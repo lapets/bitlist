@@ -289,6 +289,61 @@ class bitlist():
         else:
             return bitlist(list(reversed(self.bits[n:])))
 
+    def __and__(self: bitlist, other: bitlist) -> bitlist:
+        """
+        >>> bitlist('0100') & bitlist('1100')
+        bitlist('0100')
+        """
+        if len(self) != len(other):
+            raise ValueError(
+                "arguments to logical operations must have equal lengths"
+            )
+        return bitlist(list(reversed(
+            [a & b for (a, b) in zip(self.bits, other.bits)]
+        )))
+
+    def __or__(self: bitlist, other: bitlist) -> bitlist:
+        """
+        >>> bitlist('0100') | bitlist('1100')
+        bitlist('1100')
+        """
+        if len(self) != len(other):
+            raise ValueError(
+                "arguments to logical operations must have equal lengths"
+            )
+        return bitlist(list(reversed(
+            [a | b for (a, b) in zip(self.bits, other.bits)]
+        )))
+
+    def __xor__(self: bitlist, other: bitlist) -> bitlist:
+        """
+        >>> bitlist('0100') ^ bitlist('1101')
+        bitlist('1001')
+        """
+        if len(self) != len(other):
+            raise ValueError(
+                "arguments to logical operations must have equal lengths"
+            )
+        return bitlist(list(reversed(
+            [a ^ b for (a, b) in zip(self.bits, other.bits)]
+        )))
+
+    def __invert__(self: bitlist) -> bitlist:
+        """
+        >>> ~bitlist('0100')
+        bitlist('1011')
+        """
+        return bitlist(list(reversed([1-b for b in self.bits])))
+
+    def __bool__(self: bitlist) -> bool:
+        """
+        >>> bool(bitlist('0100'))
+        True
+        >>> bool(bitlist('0000'))
+        False
+        """
+        return 1 in self.bits
+
     def __eq__(self: bitlist, other: bitlist) -> bool:
         """
         >>> bitlist('111') == bitlist(7)
