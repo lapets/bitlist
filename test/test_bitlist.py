@@ -62,7 +62,7 @@ def div(x, y):
 
     return q
 
-class TestBitList(TestCase):
+class Test_bitlist(TestCase):
     def test_from_integer(self):
         self.assertEqual(bitlist(123), bitlist('1111011'))
 

@@ -6,8 +6,8 @@ representation of bit vectors.
 
 from __future__ import annotations
 from typing import Sequence
-from parts import parts
 import doctest
+from parts import parts
 
 class bitlist():
     """
@@ -106,10 +106,11 @@ class bitlist():
     """
 
     @staticmethod
-    def fromhex(hex):
-        return bitlist(bytes.fromhex(hex))
+    def fromhex(s):
+        """Build a bitlist from a hexadecimal string."""
+        return bitlist(bytes.fromhex(s))
 
-    def __init__(self: bitlist, argument = None, length = None):
+    def __init__(self: bitlist, argument=None, length=None):
         """
         Parse argument depending on its type and build bit string.
         """
@@ -121,7 +122,7 @@ class bitlist():
             # Convert any integer into its bit representation,
             # starting with the first non-zero digit.
             self.bits =\
-                bytearray(\
+                bytearray(
                     reversed([int(b) for b in "{0:b}".format(argument)])
                 )
 
@@ -130,13 +131,12 @@ class bitlist():
             self.bits =\
                 bytearray(reversed([int(b) for b in argument]))
 
-        elif isinstance(argument, bytearray) or\
-             isinstance(argument, bytes):
+        elif isinstance(argument, (bytes, bytearray)):
             # Convert bytes-like object into its constituent bits,
             # with exactly eight bits per byte (i.e., leading zeros
             # are included).
             self.bits =\
-                bytearray([\
+                bytearray([
                     b
                     for byte in reversed(argument)
                     for b in [(byte >> i) % 2 for i in range(0, 8)]
@@ -157,7 +157,7 @@ class bitlist():
 
         else:
             raise ValueError("bitlist constructor received unsupported argument")
-            
+
         if length is not None:
             # Pad or truncate the bit vector to ensure the specified length.
             if length > len(self.bits):
@@ -172,23 +172,34 @@ class bitlist():
         return str(self)
 
     def __int__(self: bitlist) -> int:
-        return sum(b*(2**i) for (i,b) in enumerate(self.bits))
+        return sum(b*(2**i) for (i, b) in enumerate(self.bits))
 
     def to_bytes(self: bitlist) -> bytes:
-        return bytes(reversed([int(bitlist(list(reversed(bs)))) for bs in parts(self.bits, length=8)]))
+        """
+        Return a bytes-like object representation. Note that the
+        number of bits will be padded to a multiple of eight.
+        """
+        return bytes(reversed([
+            int(bitlist(list(reversed(bs))))
+            for bs in parts(self.bits, length=8)
+        ]))
 
     def hex(self):
+        """
+        Return a hexadecimal string representation. Note that the
+        number of bits will be padded to a multiple of eight.
+        """
         return self.to_bytes().hex()
 
     def __len__(self: bitlist) -> int:
         return len(self.bits)
 
     def __add__(self: bitlist, other: bitlist) -> bitlist:
-        return bitlist(list(reversed([b for b in other.bits]+[b for b in self.bits])))
+        return bitlist(list(reversed(list(other.bits)+list(self.bits))))
 
     def __mul__(self: bitlist, other) -> bitlist:
         if isinstance(other, int):
-            return bitlist(list(reversed([b for b in self.bits]))*other)
+            return bitlist(list(reversed(list(self.bits)))*other)
         else:
             raise ValueError("repetition parameter must be an integer")
 
@@ -196,9 +207,9 @@ class bitlist():
         """
         Break up a bit list into the specified number of parts.
         """
-        if type(other) is set and len(other) == 1 and type(list(other)[0]) is int:
+        if isinstance(other, set) and len(other) == 1 and isinstance(list(other)[0], int):
             ps = parts(self.bits, length=list(other)[0])
-        elif type(other) is list:
+        elif isinstance(other, list):
             ps = parts(self.bits, length=list(reversed(other)))
         else:
             ps = parts(self.bits, other)
@@ -228,7 +239,7 @@ class bitlist():
             i = len(self.bits) - 1 - i
             self.bits =\
                 bytearray([
-                    (self.bits[j] if j != i else b) 
+                    (self.bits[j] if j != i else b)
                     for j in range(0, len(self.bits))
                 ])
         else:

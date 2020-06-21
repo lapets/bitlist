@@ -23,29 +23,33 @@ The library can be imported in the usual way::
     import bitlist
     from bitlist import bitlist
 
-Testing
--------
-
-The library comes with a number of tests::
-
-    nosetests
-    python bitlist/bitlist.py -v
-
-Examples
---------
 An example of usage (a bitwise addition function) is provided below::
 
     from bitlist import bitlist
     def add(x, y):
         """Bitwise addition algorithm."""
-        k = len(x)
-        l = len(y)
         r = bitlist(0)
 
         # Upper bound is not inclusive.
         # Use negative indices for big-endian interface.
         carry = 0
-        for i in range(1, max(k, l) + 1):
+        for i in range(1, max(len(x), len(y)) + 1):
             r[-i] = (x[-i] ^ y[-i]) ^ carry
             carry = (x[-i] & y[-i]) | (x[-i] & carry) | (y[-i] & carry)
-        r[-(max(k, l) + 1)] = carry
+        r[-(max(len(x), len(y)) + 1)] = carry
+
+        return r
+
+Testing and Conventions
+-----------------------
+Unit tests can be executed using `nose <https://nose.readthedocs.io/>`_::
+
+    nosetests
+
+Additional unit tests included in the module itself can be executed using `doctest <https://docs.python.org/3/library/doctest.html>`_::
+
+    python bitlist/bitlist.py -v
+
+Style conventions are enforced using `Pylint <https://www.pylint.org/>`_::
+
+    pylint bitlist
