@@ -1,6 +1,6 @@
 """Simple bit string data structure.
 
-Minimal Python library for working with little-endian list
+Minimal Python library for working with list
 representation of bit vectors.
 """
 
@@ -12,107 +12,49 @@ from parts import parts
 class bitlist():
     """
     Class for bit vectors.
-
-    >>> bitlist(123)
-    bitlist('1111011')
-    >>> int(bitlist('1111011'))
-    123
-    >>> bitlist(bytes([123]))
-    bitlist('01111011')
-    >>> bitlist(bytes([123]), 16)
-    bitlist('0000000001111011')
-    >>> bitlist(16, 64)
-    bitlist('0000000000000000000000000000000000000000000000000000000000010000')
-    >>> bitlist(bitlist('1010'))
-    bitlist('1010')
-    >>> bitlist(bitlist(123), 8)
-    bitlist('01111011')
-    >>> xs = bitlist(123, 8)
-    >>> ys = bitlist(xs)
-    >>> ys[0] = 1
-    >>> xs
-    bitlist('01111011')
-    >>> ys
-    bitlist('11111011')
-    >>> bitlist(bytes([123]), 4)
-    bitlist('1011')
-    >>> bitlist(bytes([123, 123]))
-    bitlist('0111101101111011')
-    >>> bitlist(bytes([1, 2, 3]))
-    bitlist('000000010000001000000011')
-    >>> int.from_bytes(bitlist('10000000').to_bytes(), 'big')
-    128
-    >>> int.from_bytes(bitlist('1000000010000011').to_bytes(), 'big')
-    32899
-    >>> int.from_bytes(bitlist('110000000').to_bytes(), 'big')
-    384
-    >>> bitlist(129 + 128*256).to_bytes()
-    b'\x80\x81'
-    >>> int(bitlist(bytes([128,129]))) == int.from_bytes(bytes([128,129]), 'big')
-    True
-
-
-    >>> bitlist(bytes([123])).hex()
-    '7b'
-    >>> bitlist.fromhex('abcd')
-    bitlist('1010101111001101')
-
-    >>> bitlist('11') + bitlist('10')
-    bitlist('1110')
-    >>> bitlist(256)*2
-    bitlist('100000000100000000')
-    >>> bitlist('11010001') / 2
-    [bitlist('1101'), bitlist('0001')]
-    >>> bitlist('11010001') / [2,6]
-    [bitlist('11'), bitlist('010001')]
-    >>> bitlist('11010001') / {4}
-    [bitlist('1101'), bitlist('0001')]
-    >>> bitlist('11010001') / 3
-    [bitlist('110'), bitlist('100'), bitlist('01')]
-
-    >>> bitlist('1111011')[2]
-    1
-    >>> bitlist('0111011')[0]
-    0
-    >>> x = bitlist('1111011')
-    >>> x[2] = 0
-    >>> x
-    bitlist('1101011')
-    >>> bitlist('10101000')[0:5]
-    bitlist('10101')
-    >>> bitlist('10101000101010001010100010101000')[0:16]
-    bitlist('1010100010101000')
-
-    >>> bitlist('11') << 2
-    bitlist('1100')
-    >>> bitlist('1111') >> 2
-    bitlist('11')
-
-    >>> bitlist('111') == bitlist(7)
-    True
-    >>> bitlist(123) == bitlist(0)
-    False
-    >>> bitlist(123) == bitlist('0001111011')
-    True
-    >>> bitlist('001') == bitlist('1')
-    True
-    >>> bitlist(123) > bitlist(0)
-    True
-    >>> bitlist(123) < bitlist(0)
-    False
-    >>> bitlist(123) <= bitlist(0)
-    False
-
     """
 
     @staticmethod
     def fromhex(s):
-        """Build a bitlist from a hexadecimal string."""
+        """
+        Build a bitlist from a hexadecimal string.
+
+        >>> bitlist.fromhex('abcd')
+        bitlist('1010101111001101')
+        """
         return bitlist(bytes.fromhex(s))
 
     def __init__(self: bitlist, argument=None, length=None):
         """
         Parse argument depending on its type and build bit string.
+
+        >>> bitlist(123)
+        bitlist('1111011')
+        >>> int(bitlist('1111011'))
+        123
+        >>> bitlist(bytes([123]))
+        bitlist('01111011')
+        >>> bitlist(bytes([123]), 16)
+        bitlist('0000000001111011')
+        >>> bitlist(16, 64)
+        bitlist('0000000000000000000000000000000000000000000000000000000000010000')
+        >>> bitlist(bitlist('1010'))
+        bitlist('1010')
+        >>> bitlist(bitlist(123), 8)
+        bitlist('01111011')
+        >>> xs = bitlist(123, 8)
+        >>> ys = bitlist(xs)
+        >>> ys[0] = 1
+        >>> xs
+        bitlist('01111011')
+        >>> ys
+        bitlist('11111011')
+        >>> bitlist(bytes([123]), 4)
+        bitlist('1011')
+        >>> bitlist(bytes([123, 123]))
+        bitlist('0111101101111011')
+        >>> bitlist(bytes([1, 2, 3]))
+        bitlist('000000010000001000000011')
         """
         if argument is None:
             # By default, always return the bit vector representing zero.
@@ -172,12 +114,28 @@ class bitlist():
         return str(self)
 
     def __int__(self: bitlist) -> int:
+        """
+        Interpret the bits as a big-endian representation
+        of an integer and return that integer.
+
+        >>> int(bitlist(bytes([128,129]))) == int.from_bytes(bytes([128,129]), 'big')
+        True
+        """
         return sum(b*(2**i) for (i, b) in enumerate(self.bits))
 
     def to_bytes(self: bitlist) -> bytes:
         """
         Return a bytes-like object representation. Note that the
         number of bits will be padded to a multiple of eight.
+
+        >>> int.from_bytes(bitlist('10000000').to_bytes(), 'big')
+        128
+        >>> int.from_bytes(bitlist('1000000010000011').to_bytes(), 'big')
+        32899
+        >>> int.from_bytes(bitlist('110000000').to_bytes(), 'big')
+        384
+        >>> bitlist(129 + 128*256).to_bytes()
+        b'\x80\x81'
         """
         return bytes(reversed([
             int(bitlist(list(reversed(bs))))
@@ -188,6 +146,9 @@ class bitlist():
         """
         Return a hexadecimal string representation. Note that the
         number of bits will be padded to a multiple of eight.
+
+        >>> bitlist(bytes([123])).hex()
+        '7b'
         """
         return self.to_bytes().hex()
 
@@ -195,9 +156,21 @@ class bitlist():
         return len(self.bits)
 
     def __add__(self: bitlist, other: bitlist) -> bitlist:
+        """
+        List concatenation.
+
+        >>> bitlist('11') + bitlist('10')
+        bitlist('1110')
+        """
         return bitlist(list(reversed(list(other.bits)+list(self.bits))))
 
     def __mul__(self: bitlist, other) -> bitlist:
+        """
+        List repetition.
+
+        >>> bitlist(256)*2
+        bitlist('100000000100000000')
+        """
         if isinstance(other, int):
             return bitlist(list(reversed(list(self.bits)))*other)
         else:
@@ -206,6 +179,15 @@ class bitlist():
     def __truediv__(self: bitlist, other: int) -> Sequence[bitlist]:
         """
         Break up a bit list into the specified number of parts.
+
+        >>> bitlist('11010001') / 2
+        [bitlist('1101'), bitlist('0001')]
+        >>> bitlist('11010001') / [2,6]
+        [bitlist('11'), bitlist('010001')]
+        >>> bitlist('11010001') / {4}
+        [bitlist('1101'), bitlist('0001')]
+        >>> bitlist('11010001') / 3
+        [bitlist('110'), bitlist('100'), bitlist('01')]
         """
         if isinstance(other, set) and len(other) == 1 and isinstance(list(other)[0], int):
             ps = parts(self.bits, length=list(other)[0])
@@ -216,6 +198,16 @@ class bitlist():
         return list(reversed([bitlist(list(reversed(p))) for p in ps]))
 
     def __getitem__(self: bitlist, key):
+        """
+        >>> bitlist('1111011')[2]
+        1
+        >>> bitlist('0111011')[0]
+        0
+        >>> bitlist('10101000')[0:5]
+        bitlist('10101')
+        >>> bitlist('10101000101010001010100010101000')[0:16]
+        bitlist('1010100010101000')
+        """
         if isinstance(key, int):
             if key < 0: # Support "big-endian" interface using negative indices.
                 return self.bits[abs(key)-1] if abs(key) <= len(self.bits) else 0
@@ -229,6 +221,12 @@ class bitlist():
             raise TypeError("bitlist indices must be integers or slices")
 
     def __setitem__(self: bitlist, i: int, b):
+        """
+        >>> x = bitlist('1111011')
+        >>> x[2] = 0
+        >>> x
+        bitlist('1101011')
+        """
         if i < 0: # Support "big-endian" interface using negative indices.
             self.bits =\
                 bytearray([
@@ -246,29 +244,87 @@ class bitlist():
             raise IndexError("bitlist index out of range")
 
     def __lshift__(self: bitlist, n: int) -> bitlist:
+        """
+        >>> bitlist('11') << 2
+        bitlist('1100')
+        """
         return bitlist(list(reversed(list([0] * n) + list(self.bits))))
 
     def __rshift__(self: bitlist, n: int) -> bitlist:
+        """
+        >>> bitlist('1111') >> 2
+        bitlist('11')
+        """
         return bitlist(list(reversed(self.bits[n:len(self.bits)])))
 
     def __eq__(self: bitlist, other: bitlist) -> bool:
+        """
+        >>> bitlist('111') == bitlist(7)
+        True
+        >>> bitlist(123) == bitlist(0)
+        False
+        >>> bitlist(123) == bitlist('0001111011')
+        True
+        >>> bitlist('001') == bitlist('1')
+        True
+        """
         # Ignores leading zeros in representation.
         return int(self) == int(other)
 
     def __ne__(self: bitlist, other: bitlist) -> bool:
+        """
+        >>> bitlist('111') != bitlist(7)
+        False
+        >>> bitlist(123) != bitlist(0)
+        True
+        >>> bitlist('001') != bitlist('1')
+        False
+        """
         # Ignores leading zeros in representation.
         return int(self) != int(other)
 
     def __lt__(self: bitlist, other: bitlist) -> bool:
+        """
+        >>> bitlist(123) < bitlist(0)
+        False
+        >>> bitlist(123) < bitlist(123)
+        False
+        >>> bitlist(12) < bitlist(23)
+        True
+        """
         return int(self) < int(other)
 
     def __le__(self: bitlist, other: bitlist) -> bool:
+        """
+        >>> bitlist(123) <= bitlist(0)
+        False
+        >>> bitlist(123) <= bitlist(123)
+        True
+        >>> bitlist(12) <= bitlist(23)
+        True
+        """
         return int(self) <= int(other)
 
     def __gt__(self: bitlist, other: bitlist) -> bool:
+        """
+        >>> bitlist(123) > bitlist(0)
+        True
+        >>> bitlist(123) > bitlist(123)
+        False
+        >>> bitlist(12) > bitlist(23)
+        False
+        """
         return int(self) > int(other)
 
     def __ge__(self: bitlist, other: bitlist) -> bool:
+        """
+        >>> bitlist(123) >= bitlist(0)
+        True
+        >>> bitlist(123) >= bitlist(123)
+        True
+        >>> bitlist(12) >= bitlist(23)
+        False
+        """
         return int(self) >= int(other)
 
 if __name__ == "__main__":
