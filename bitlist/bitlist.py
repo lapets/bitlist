@@ -28,6 +28,8 @@ class bitlist():
         """
         Parse argument depending on its type and build bit string.
 
+        >>> bitlist() == bitlist('0')
+        True
         >>> bitlist(123)
         bitlist('1111011')
         >>> int(bitlist('1111011'))
@@ -55,6 +57,10 @@ class bitlist():
         bitlist('0111101101111011')
         >>> bitlist(bytes([1, 2, 3]))
         bitlist('000000010000001000000011')
+        >>> bitlist(float(1))
+        Traceback (most recent call last):
+          ...
+        ValueError: bitlist constructor received unsupported argument
         """
         if argument is None:
             # By default, always return the bit vector representing zero.
@@ -170,6 +176,10 @@ class bitlist():
 
         >>> bitlist(256)*2
         bitlist('100000000100000000')
+        >>> bitlist(256)*'a'
+        Traceback (most recent call last):
+          ...
+        ValueError: repetition parameter must be an integer
         """
         if isinstance(other, int):
             return bitlist(list(reversed(list(self.bits)))*other)
@@ -207,6 +217,14 @@ class bitlist():
         bitlist('10101')
         >>> bitlist('10101000101010001010100010101000')[0:16]
         bitlist('1010100010101000')
+        >>> bitlist('101')[4]
+        Traceback (most recent call last):
+          ...
+        IndexError: bitlist index out of range
+        >>> bitlist('101')['a']
+        Traceback (most recent call last):
+          ...
+        TypeError: bitlist indices must be integers or slices
         """
         if isinstance(key, int):
             if key < 0: # Support "big-endian" interface using negative indices.
@@ -226,6 +244,10 @@ class bitlist():
         >>> x[2] = 0
         >>> x
         bitlist('1101011')
+        >>> x[7] = 0
+        Traceback (most recent call last):
+          ...
+        IndexError: bitlist index out of range
         """
         if i < 0: # Support "big-endian" interface using negative indices.
             self.bits =\
@@ -293,6 +315,10 @@ class bitlist():
         """
         >>> bitlist('0100') & bitlist('1100')
         bitlist('0100')
+        >>> bitlist('010') & bitlist('11')
+        Traceback (most recent call last):
+          ...
+        ValueError: arguments to logical operations must have equal lengths
         """
         if len(self) != len(other):
             raise ValueError(
