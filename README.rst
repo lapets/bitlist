@@ -47,11 +47,11 @@ An example of usage (a bitwise addition function) is provided below::
 
 Testing and Conventions
 -----------------------
-Unit tests can be executed using `nose <https://nose.readthedocs.io/>`_::
+All unit tests are executed and their coverage is measured when using `nose <https://nose.readthedocs.io/>`_ (see ``setup.cfg`` for configution details)::
 
     nosetests
 
-Additional unit tests included in the module itself can be executed using `doctest <https://docs.python.org/3/library/doctest.html>`_::
+The subset of the unit tests included in the module itself can be executed using `doctest <https://docs.python.org/3/library/doctest.html>`_::
 
     python bitlist/bitlist.py -v
 

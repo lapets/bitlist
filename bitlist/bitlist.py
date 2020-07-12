@@ -441,4 +441,4 @@ class bitlist():
         return int(self) >= int(other)
 
 if __name__ == "__main__":
-    doctest.testmod()
+    doctest.testmod() # pragma: no cover

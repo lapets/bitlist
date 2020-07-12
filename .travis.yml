@@ -12,5 +12,4 @@ install:
   - pip install .
 script:
   - pylint bitlist
-  - python bitlist/bitlist.py -v
   - nosetests

@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from bitlist import bitlist
+from bitlist.bitlist import bitlist
 
 def add(x, y):
     """Bitwise addition algorithm."""
