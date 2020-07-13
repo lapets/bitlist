@@ -4,14 +4,17 @@ bitlist
 
 Minimal Python library for working with bit vectors natively.
 
-|pypi| |travis|
+|pypi| |travis| |coveralls|
 
 .. |pypi| image:: https://badge.fury.io/py/bitlist.svg
    :target: https://badge.fury.io/py/bitlist
    :alt: PyPI version and link.
 
 .. |travis| image:: https://travis-ci.com/lapets/bitlist.svg?branch=master
-    :target: https://travis-ci.com/lapets/bitlist
+   :target: https://travis-ci.com/lapets/bitlist
+
+.. |coveralls| image:: https://coveralls.io/repos/github/lapets/bitlist/badge.svg?branch=master
+   :target: https://coveralls.io/github/lapets/bitlist?branch=master
 
 Purpose
 -------
