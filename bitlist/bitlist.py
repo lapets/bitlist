@@ -332,6 +332,10 @@ class bitlist():
         """
         >>> bitlist('0100') | bitlist('1100')
         bitlist('1100')
+        >>> bitlist('010') | bitlist('11')
+        Traceback (most recent call last):
+          ...
+        ValueError: arguments to logical operations must have equal lengths
         """
         if len(self) != len(other):
             raise ValueError(
@@ -345,6 +349,10 @@ class bitlist():
         """
         >>> bitlist('0100') ^ bitlist('1101')
         bitlist('1001')
+        >>> bitlist('010') ^ bitlist('11')
+        Traceback (most recent call last):
+          ...
+        ValueError: arguments to logical operations must have equal lengths
         """
         if len(self) != len(other):
             raise ValueError(
