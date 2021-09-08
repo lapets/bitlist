@@ -1,3 +1,9 @@
+"""Functional unit tests for class and methods.
+
+Test suite containing functional unit tests (based
+on bit vector implementations of common arithmetic
+operations) for the class and some of its methods.
+"""
 from unittest import TestCase
 
 from bitlist.bitlist import bitlist

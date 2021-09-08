@@ -10,11 +10,11 @@ Minimal Python library for working with bit vectors natively.
    :target: https://badge.fury.io/py/bitlist
    :alt: PyPI version and link.
 
-.. |travis| image:: https://travis-ci.com/lapets/bitlist.svg?branch=master
+.. |travis| image:: https://travis-ci.com/lapets/bitlist.svg?branch=main
    :target: https://travis-ci.com/lapets/bitlist
 
-.. |coveralls| image:: https://coveralls.io/repos/github/lapets/bitlist/badge.svg?branch=master
-   :target: https://coveralls.io/github/lapets/bitlist?branch=master
+.. |coveralls| image:: https://coveralls.io/repos/github/lapets/bitlist/badge.svg?branch=main
+   :target: https://coveralls.io/github/lapets/bitlist?branch=main
 
 Purpose
 -------
@@ -50,7 +50,7 @@ An example of usage (a bitwise addition function) is provided below::
 
 Testing and Conventions
 -----------------------
-All unit tests are executed and their coverage is measured when using `nose <https://nose.readthedocs.io/>`_ (see ``setup.cfg`` for configution details)::
+All unit tests are executed and their coverage is measured when using `nose <https://nose.readthedocs.io/>`_ (see ``setup.cfg`` for configuration details)::
 
     nosetests
 
