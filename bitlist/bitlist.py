@@ -114,7 +114,7 @@ class bitlist():
                 self.bits = self.bits[0:length]
 
     def __str__(self: bitlist) -> str:
-        return "bitlist('" + "".join(list(reversed([str(b) for b in self.bits]))) + "')"
+        return "bitlist('" + self.bin() + "')"
 
     def __repr__(self: bitlist) -> str:
         return str(self)
@@ -147,6 +147,16 @@ class bitlist():
             int(bitlist(list(reversed(bs))))
             for bs in parts(self.bits, length=8)
         ]))
+
+    def bin(self):
+        """
+        Return a binary string representation. This matches the string emitted
+        as part of the output of the default string conversion method.
+
+        >>> bitlist('010011').bin()
+        '010011'
+        """
+        return ''.join(list(reversed([str(b) for b in self.bits])))
 
     def hex(self):
         """
