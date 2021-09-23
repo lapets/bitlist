@@ -10,8 +10,10 @@ cache: pip
 install:
   - pip install pylint
   - pip install coveralls
+  - pip install sphinx sphinx-rtd-theme
   - pip install .
 script:
+  - cd docs && sphinx-apidoc -f -E --templatedir=_templates -o _source .. ../setup.py && make html
   - pylint bitlist
   - nosetests
 after_success:
