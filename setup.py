@@ -7,7 +7,7 @@ setup(
     name="bitlist",
     version="0.5.0",
     packages=["bitlist",],
-    install_requires=["parts~=1.1.0",],
+    install_requires=["parts~=1.1.1",],
     license="MIT",
     url="https://github.com/lapets/bitlist",
     author="Andrei Lapets",
