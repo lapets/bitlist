@@ -21,8 +21,9 @@ project = 'bitlist'
 copyright = '2017, Andrei Lapets' # Period omitted; precedes punctuation.
 author = 'Andrei Lapets'
 
-# The full version, including alpha/beta/rc tags
-release = '0.5.0'
+# The version number is retrieved from `setup.py` in the root directory.
+version = open('../setup.py').read().split('version = "')[1].split('"')[0]
+release = version
 
 
 # -- General configuration ---------------------------------------------------
