@@ -5,9 +5,9 @@ with open("README.rst", "r") as fh:
 
 setup(
     name="bitlist",
-    version="0.4.0",
+    version="0.5.0",
     packages=["bitlist",],
-    install_requires=["parts~=1.0.3",],
+    install_requires=["parts~=1.1.0",],
     license="MIT",
     url="https://github.com/lapets/bitlist",
     author="Andrei Lapets",

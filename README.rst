@@ -22,7 +22,7 @@ This library allows programmers to work with a native representation of bit vect
 
 Package Installation and Usage
 ------------------------------
-The package is available on PyPI::
+The package is available on `PyPI <https://pypi.org/project/bitlist/>`_::
 
     python -m pip install bitlist
 
@@ -31,9 +31,10 @@ The library can be imported in the usual way::
     import bitlist
     from bitlist import bitlist
 
-An example of usage (a bitwise addition function) is provided below::
+A basic example of usage (a bitwise addition function) is provided below::
 
     from bitlist import bitlist
+
     def add(x, y):
         """Bitwise addition algorithm."""
         r = bitlist(0)
@@ -62,6 +63,7 @@ Testing and Conventions
 -----------------------
 All unit tests are executed and their coverage is measured when using `nose <https://nose.readthedocs.io/>`_ (see ``setup.cfg`` for configuration details)::
 
+    python -m pip install nose coverage
     nosetests
 
 The subset of the unit tests included in the module itself can be executed using `doctest <https://docs.python.org/3/library/doctest.html>`_::
@@ -70,11 +72,12 @@ The subset of the unit tests included in the module itself can be executed using
 
 Style conventions are enforced using `Pylint <https://www.pylint.org/>`_::
 
+    python -m pip install pylint
     pylint bitlist
 
 Contributions
 -------------
-In order to contribute to the source code, open an issue or submit a pull request on the GitHub page for this library.
+In order to contribute to the source code, open an issue or submit a pull request on the `GitHub page <https://github.com/lapets/bitlist>`_ for this library.
 
 Versioning
 ----------
