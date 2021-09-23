@@ -56,9 +56,7 @@ class bitlist:
             # Convert any integer into its bit representation,
             # starting with the first non-zero digit.
             self.bits =\
-                bytearray(
-                    reversed([int(b) for b in "{0:b}".format(argument)])
-                )
+                bytearray(reversed([int(b) for b in f'{argument:b}']))
 
         elif isinstance(argument, str) and len(argument) > 0:
             # Convert string of binary digit characters.
