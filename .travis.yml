@@ -13,7 +13,7 @@ install:
   - pip install sphinx sphinx-rtd-theme
   - pip install .
 script:
-  - cd docs && sphinx-apidoc -f -E --templatedir=_templates -o _source .. ../setup.py && make html
+  - cd docs && sphinx-apidoc -f -E --templatedir=_templates -o _source .. ../setup.py && make html && cd ..
   - pylint bitlist
   - nosetests
 after_success:
