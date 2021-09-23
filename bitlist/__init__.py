@@ -1,2 +1,2 @@
-"""Allow users to build bitlist values directly."""
+"""Gives users direct access to class."""
 from bitlist.bitlist import bitlist

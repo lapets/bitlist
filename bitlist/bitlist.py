@@ -1,32 +1,18 @@
-"""Simple bit string data structure.
-
-Minimal Python library for working with list
-representation of bit vectors.
 """
-
+Minimal Python library for working with bit vectors natively.
+"""
 from __future__ import annotations
-from typing import Sequence
+from typing import Optional, Union, Sequence, Set
 import doctest
 from parts import parts
 
-class bitlist():
+class bitlist:
     """
-    Class for bit vectors.
+    Data structure for representing bit vectors.
     """
-
-    @staticmethod
-    def fromhex(s):
+    def __init__(self: bitlist, argument=None, length: Optional[int] = None):
         """
-        Build a bitlist from a hexadecimal string.
-
-        >>> bitlist.fromhex('abcd')
-        bitlist('1010101111001101')
-        """
-        return bitlist(bytes.fromhex(s))
-
-    def __init__(self: bitlist, argument=None, length=None):
-        """
-        Parse argument depending on its type and build bit string.
+        Parse argument depending on its type and build a bit vector instance.
 
         >>> bitlist() == bitlist('0')
         True
@@ -113,18 +99,39 @@ class bitlist():
             elif length < len(self.bits):
                 self.bits = self.bits[0:length]
 
+    @staticmethod
+    def fromhex(s: str) -> bitlist:
+        """
+        Build an instance from a hexadecimal string.
+
+        >>> bitlist.fromhex('abcd')
+        bitlist('1010101111001101')
+        """
+        return bitlist(bytes.fromhex(s))
+
     def __str__(self: bitlist) -> str:
+        """
+        Return a string representation (that can also be evaluated
+        as a valid Python expression if the class is in the namespace).
+
+        >>> bitlist('01')
+        bitlist('01')
+        """
         return "bitlist('" + self.bin() + "')"
 
     def __repr__(self: bitlist) -> str:
+        """
+        Return a string representation (that can also be evaluated
+        as a valid Python expression if the class is in the namespace).
+        """
         return str(self)
 
     def __int__(self: bitlist) -> int:
         """
-        Interpret the bits as a big-endian representation
+        Interpret the bit vector as a big-endian representation
         of an integer and return that integer.
 
-        >>> int(bitlist(bytes([128,129]))) == int.from_bytes(bytes([128,129]), 'big')
+        >>> int(bitlist(bytes([128, 129]))) == int.from_bytes(bytes([128, 129]), 'big')
         True
         """
         return sum(b*(2**i) for (i, b) in enumerate(self.bits))
@@ -132,7 +139,8 @@ class bitlist():
     def to_bytes(self: bitlist) -> bytes:
         """
         Return a bytes-like object representation. Note that the
-        number of bits will be padded to a multiple of eight.
+        number of bits will be padded (on the left) to a multiple
+        of eight.
 
         >>> int.from_bytes(bitlist('10000000').to_bytes(), 'big')
         128
@@ -140,15 +148,17 @@ class bitlist():
         32899
         >>> int.from_bytes(bitlist('110000000').to_bytes(), 'big')
         384
-        >>> bitlist(129 + 128*256).to_bytes()
-        b'\x80\x81'
+        >>> bitlist(129 + 128*256).to_bytes().hex()
+        '8081'
+        >>> bitlist('11').to_bytes().hex()
+        '03'
         """
         return bytes(reversed([
             int(bitlist(list(reversed(bs))))
             for bs in parts(self.bits, length=8)
         ]))
 
-    def bin(self):
+    def bin(self: bitlist) -> str:
         """
         Return a binary string representation. This matches the string emitted
         as part of the output of the default string conversion method.
@@ -158,10 +168,10 @@ class bitlist():
         """
         return ''.join(list(reversed([str(b) for b in self.bits])))
 
-    def hex(self):
+    def hex(self: bitlist) -> str:
         """
-        Return a hexadecimal string representation. Note that the
-        number of bits will be padded to a multiple of eight.
+        Return a hexadecimal string representation. Note that the number
+        of bits will be padded (on the left) to a multiple of eight.
 
         >>> bitlist(bytes([123])).hex()
         '7b'
@@ -169,20 +179,29 @@ class bitlist():
         return self.to_bytes().hex()
 
     def __len__(self: bitlist) -> int:
+        """
+        Return length of bit vector (defined to be the number of bits
+        it contains).
+
+        >>> bitlist('11') + bitlist('10')
+        bitlist('1110')
+        """
         return len(self.bits)
 
     def __add__(self: bitlist, other: bitlist) -> bitlist:
         """
-        List concatenation.
+        The addition operator can be used for concatenation, as with
+        other objects that have sequence types.
 
         >>> bitlist('11') + bitlist('10')
         bitlist('1110')
         """
         return bitlist(list(reversed(list(other.bits)+list(self.bits))))
 
-    def __mul__(self: bitlist, other) -> bitlist:
+    def __mul__(self: bitlist, other: int) -> bitlist:
         """
-        List repetition.
+        The multiplication operator can be used for repetition, as with
+        other objects that have sequence types.
 
         >>> bitlist(256)*2
         bitlist('100000000100000000')
@@ -196,13 +215,18 @@ class bitlist():
         else:
             raise ValueError("repetition parameter must be an integer")
 
-    def __truediv__(self: bitlist, other: int) -> Sequence[bitlist]:
+    def __truediv__(
+        self: bitlist, other: Union[int, Set[int], Sequence[int]]
+    ) -> Sequence[bitlist]:
         """
-        Break up a bit list into the specified number of parts.
+        The division operator can be used to partition a bit vector into the
+        specified number of parts, into parts of a specified length, or into
+        a sequence of parts in which each part's length is specified in a
+        sequence of integers.
 
         >>> bitlist('11010001') / 2
         [bitlist('1101'), bitlist('0001')]
-        >>> bitlist('11010001') / [2,6]
+        >>> bitlist('11010001') / [2, 6]
         [bitlist('11'), bitlist('010001')]
         >>> bitlist('11010001') / {4}
         [bitlist('1101'), bitlist('0001')]
@@ -217,8 +241,11 @@ class bitlist():
             ps = parts(self.bits, other)
         return list(reversed([bitlist(list(reversed(p))) for p in ps]))
 
-    def __getitem__(self: bitlist, key):
+    def __getitem__(self: bitlist, key: Union[int, slice]) -> Union[int, bitlist]:
         """
+        Retrieve the bit at the specified index, or construct a slice
+        of the bit vector.
+
         >>> bitlist('1111011')[2]
         1
         >>> bitlist('0111011')[0]
@@ -248,8 +275,10 @@ class bitlist():
         else:
             raise TypeError("bitlist indices must be integers or slices")
 
-    def __setitem__(self: bitlist, i: int, b):
+    def __setitem__(self: bitlist, i: int, b: int):
         """
+        Set the bit at the specified index to the supplied value.
+
         >>> x = bitlist('1111011')
         >>> x[2] = 0
         >>> x
@@ -275,8 +304,12 @@ class bitlist():
         else:
             raise IndexError("bitlist index out of range")
 
-    def __lshift__(self: bitlist, n) -> bitlist:
+    def __lshift__(self: bitlist, n: Union[int, Set[int]]) -> bitlist:
         """
+        The left shift operator can be used for both performing a bit shift
+        in the traditional manner (increasing the length of the bit vector)
+        or for bit rotation (if the second parameter is a set).
+
         >>> bitlist('11') << 2
         bitlist('1100')
         >>> bitlist('11011') << {0}
@@ -298,8 +331,12 @@ class bitlist():
         else:
             return bitlist(list(reversed(list([0] * n) + list(self.bits))))
 
-    def __rshift__(self: bitlist, n) -> bitlist:
+    def __rshift__(self: bitlist, n: Union[int, Set[int]]) -> bitlist:
         """
+        The right shift operator can be used for both performing a bit shift
+        in the traditional manner (truncating bits on the right-hand side as
+        necessary) or for bit rotation (if the second parameter is a set).
+
         >>> bitlist('1111') >> 2
         bitlist('11')
         >>> bitlist('11011') >> {0}
@@ -323,6 +360,8 @@ class bitlist():
 
     def __and__(self: bitlist, other: bitlist) -> bitlist:
         """
+        Logical operators are applied bitwise without changing the length.
+
         >>> bitlist('0100') & bitlist('1100')
         bitlist('0100')
         >>> bitlist('010') & bitlist('11')
@@ -340,6 +379,8 @@ class bitlist():
 
     def __or__(self: bitlist, other: bitlist) -> bitlist:
         """
+        Logical operators are applied bitwise without changing the length.
+
         >>> bitlist('0100') | bitlist('1100')
         bitlist('1100')
         >>> bitlist('010') | bitlist('11')
@@ -357,6 +398,8 @@ class bitlist():
 
     def __xor__(self: bitlist, other: bitlist) -> bitlist:
         """
+        Logical operators are applied bitwise without changing the length.
+
         >>> bitlist('0100') ^ bitlist('1101')
         bitlist('1001')
         >>> bitlist('010') ^ bitlist('11')
@@ -374,6 +417,9 @@ class bitlist():
 
     def __invert__(self: bitlist) -> bitlist:
         """
+        Logical operators are applied bitwise without changing the length.
+        Inversion flips all bits and corresponds to bitwise logical negation.
+
         >>> ~bitlist('0100')
         bitlist('1011')
         """
@@ -381,6 +427,8 @@ class bitlist():
 
     def __bool__(self: bitlist) -> bool:
         """
+        Any non-zero instance is interpreted as `True`.
+
         >>> bool(bitlist('0100'))
         True
         >>> bool(bitlist('0000'))
@@ -390,6 +438,9 @@ class bitlist():
 
     def __eq__(self: bitlist, other: bitlist) -> bool:
         """
+        Instances are interpreted as integers when relational
+        operators are applied.
+
         >>> bitlist('111') == bitlist(7)
         True
         >>> bitlist(123) == bitlist(0)
@@ -404,6 +455,9 @@ class bitlist():
 
     def __ne__(self: bitlist, other: bitlist) -> bool:
         """
+        Instances are interpreted as integers when relational
+        operators are applied.
+
         >>> bitlist('111') != bitlist(7)
         False
         >>> bitlist(123) != bitlist(0)
@@ -416,6 +470,9 @@ class bitlist():
 
     def __lt__(self: bitlist, other: bitlist) -> bool:
         """
+        Instances are interpreted as integers when relational
+        operators are applied.
+
         >>> bitlist(123) < bitlist(0)
         False
         >>> bitlist(123) < bitlist(123)
@@ -427,6 +484,9 @@ class bitlist():
 
     def __le__(self: bitlist, other: bitlist) -> bool:
         """
+        Instances are interpreted as integers when relational
+        operators are applied.
+
         >>> bitlist(123) <= bitlist(0)
         False
         >>> bitlist(123) <= bitlist(123)
@@ -438,6 +498,9 @@ class bitlist():
 
     def __gt__(self: bitlist, other: bitlist) -> bool:
         """
+        Instances are interpreted as integers when relational
+        operators are applied.
+
         >>> bitlist(123) > bitlist(0)
         True
         >>> bitlist(123) > bitlist(123)
@@ -449,6 +512,9 @@ class bitlist():
 
     def __ge__(self: bitlist, other: bitlist) -> bool:
         """
+        Instances are interpreted as integers when relational
+        operators are applied.
+
         >>> bitlist(123) >= bitlist(0)
         True
         >>> bitlist(123) >= bitlist(123)
