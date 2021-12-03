@@ -17,13 +17,15 @@ sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'bitlist'
-copyright = '2017, Andrei Lapets' # Period omitted; precedes punctuation.
-author = 'Andrei Lapets'
-
-# The version number is retrieved from `setup.py` in the root directory.
-version = open('../setup.py').read().split('version = "')[1].split('"')[0]
+# The name and version are retrieved from `setup.py` in the root directory.
+with open('../setup.py') as package_file:
+    package = package_file.read()
+project = package.split('name = "')[1].split('"')[0]
+version = package.split('version = "')[1].split('"')[0]
 release = version
+
+author = 'Andrei Lapets'
+copyright = '2017, Andrei Lapets' # Period omitted; precedes punctuation.
 
 
 # -- General configuration ---------------------------------------------------
@@ -56,6 +58,8 @@ autodoc_default_options = {
         '__dict__'
     ])
 }
+autodoc_preserve_defaults = True
+
 
 # -- Options for HTML output -------------------------------------------------
 

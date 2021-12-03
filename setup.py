@@ -3,13 +3,14 @@ from setuptools import setup
 with open("README.rst", "r") as fh:
     long_description = fh.read().replace(".. include:: toc.rst\n\n", "")
 
-# The line below is parsed by `docs/conf.py`.
+# The lines below can be parsed by `docs/conf.py`.
+name = "bitlist"
 version = "0.5.1"
 
 setup(
-    name="bitlist",
+    name=name,
     version=version,
-    packages=["bitlist",],
+    packages=[name,],
     install_requires=["parts~=1.1.2",],
     license="MIT",
     url="https://github.com/lapets/bitlist",
