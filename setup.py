@@ -5,13 +5,13 @@ with open("README.rst", "r") as fh:
 
 # The lines below can be parsed by `docs/conf.py`.
 name = "bitlist"
-version = "0.5.1"
+version = "0.6.0"
 
 setup(
     name=name,
     version=version,
     packages=[name,],
-    install_requires=["parts~=1.1.2",],
+    install_requires=["parts~=1.2",],
     license="MIT",
     url="https://github.com/lapets/bitlist",
     author="Andrei Lapets",
