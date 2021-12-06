@@ -5,7 +5,7 @@ with open("README.rst", "r") as fh:
 
 # The lines below can be parsed by `docs/conf.py`.
 name = "bitlist"
-version = "0.6.1"
+version = "0.6.2"
 
 setup(
     name=name,

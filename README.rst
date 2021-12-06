@@ -55,6 +55,8 @@ A basic example of usage (a bitwise addition function) is provided below::
 
         return r
 
+The testing suite ``test/test_bitlist.py`` contains additional examples of bitwise arithmetic operations implemented with the help of this library.
+
 Documentation
 -------------
 .. include:: toc.rst
