@@ -5,13 +5,13 @@ with open("README.rst", "r") as fh:
 
 # The lines below can be parsed by `docs/conf.py`.
 name = "bitlist"
-version = "0.6.2"
+version = "0.7.0"
 
 setup(
     name=name,
     version=version,
     packages=[name,],
-    install_requires=["parts~=1.2",],
+    install_requires=["parts~=1.3",],
     license="MIT",
     url="https://github.com/lapets/bitlist",
     author="Andrei Lapets",
@@ -20,6 +20,4 @@ setup(
                 "with bit vectors natively.",
     long_description=long_description,
     long_description_content_type="text/x-rst",
-    test_suite="nose.collector",
-    tests_require=["nose"],
 )

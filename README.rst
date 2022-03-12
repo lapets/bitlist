@@ -69,10 +69,10 @@ The documentation can be generated automatically from the source files using `Sp
 
 Testing and Conventions
 -----------------------
-All unit tests are executed and their coverage is measured when using `nose <https://nose.readthedocs.io/>`_ (see ``setup.cfg`` for configuration details)::
+All unit tests are executed and their coverage is measured when using `pytest <https://docs.pytest.org/>`_ (see ``setup.cfg`` for configuration details)::
 
-    python -m pip install nose coverage
-    nosetests --cover-erase
+    python -m pip install pytest pytest-cov
+    python -m pytest
 
 The subset of the unit tests included in the module itself can be executed using `doctest <https://docs.python.org/3/library/doctest.html>`_::
 
@@ -81,7 +81,7 @@ The subset of the unit tests included in the module itself can be executed using
 Style conventions are enforced using `Pylint <https://www.pylint.org/>`_::
 
     python -m pip install pylint
-    pylint bitlist test/test_bitlist
+    python -m pylint bitlist ./test/test_bitlist.py
 
 Contributions
 -------------
