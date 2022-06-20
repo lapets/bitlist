@@ -210,8 +210,8 @@ class bitlist:
         """
         if isinstance(other, int):
             return bitlist(list(reversed(list(self.bits)))*other)
-        else:
-            raise ValueError("repetition parameter must be an integer")
+
+        raise ValueError("repetition parameter must be an integer")
 
     def __truediv__(
         self: bitlist, other: Union[int, Set[int], Sequence[int]]
@@ -264,14 +264,16 @@ class bitlist:
         if isinstance(key, int):
             if key < 0: # Support "big-endian" interface using negative indices.
                 return self.bits[abs(key)-1] if abs(key) <= len(self.bits) else 0
-            elif key < len(self.bits):
+
+            if key < len(self.bits):
                 return self.bits[len(self.bits) - 1 - key]
-            else:
-                raise IndexError("bitlist index out of range")
-        elif isinstance(key, slice):
+
+            raise IndexError("bitlist index out of range")
+
+        if isinstance(key, slice):
             return bitlist(list(reversed(self.bits))[key])
-        else:
-            raise TypeError("bitlist indices must be integers or slices")
+
+        raise TypeError("bitlist indices must be integers or slices")
 
     def __setitem__(self: bitlist, i: int, b: int):
         """
@@ -326,8 +328,8 @@ class bitlist:
         if isinstance(n, set) and len(n) == 1 and isinstance(list(n)[0], int):
             n = list(n)[0] % len(self) # Allow rotations to wrap around.
             return bitlist(list(self.bits[n:]) + list(self.bits[:n]))
-        else:
-            return bitlist(list(reversed(list([0] * n) + list(self.bits))))
+
+        return bitlist(list(reversed(list([0] * n) + list(self.bits))))
 
     def __rshift__(self: bitlist, n: Union[int, Set[int]]) -> bitlist:
         """
@@ -353,8 +355,8 @@ class bitlist:
         if isinstance(n, set) and len(n) == 1 and isinstance(list(n)[0], int):
             n = list(n)[0] % len(self) # Allow rotations to wrap around.
             return bitlist(list(self.bits[-n:]) + list(self.bits[:-n]))
-        else:
-            return bitlist(list(reversed(self.bits[n:])))
+
+        return bitlist(list(reversed(self.bits[n:])))
 
     def __and__(self: bitlist, other: bitlist) -> bitlist:
         """
@@ -371,6 +373,7 @@ class bitlist:
             raise ValueError(
                 "arguments to logical operations must have equal lengths"
             )
+
         return bitlist(list(reversed(
             [a & b for (a, b) in zip(self.bits, other.bits)]
         )))

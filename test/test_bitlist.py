@@ -77,24 +77,24 @@ class Test_bitlist(TestCase):
 
     def test_add(self):
         """Test bitwise addition."""
-        op = lambda a, b: int(add(bitlist(a), bitlist(b)))
+        op = lambda a, b: int(add(bitlist(a), bitlist(b))) # pylint: disable=C3001
         for (x, y) in [(a+b, op(a, b)) for a in range(0, 100) for b in range(0, 100)]:
             self.assertEqual(x, y)
 
     def test_mul(self):
         """Test bitwise multiplication."""
-        op = lambda a, b: int(mul(bitlist(a), bitlist(b)))
+        op = lambda a, b: int(mul(bitlist(a), bitlist(b))) # pylint: disable=C3001
         for (x, y) in [(a*b, op(a, b)) for a in range(0, 30) for b in range(0, 30)]:
             self.assertEqual(x, y)
 
     def test_exp(self):
         """Test bitwise exponentiation."""
-        op = lambda a, b: int(exp(bitlist(a), bitlist(b)))
+        op = lambda a, b: int(exp(bitlist(a), bitlist(b))) # pylint: disable=C3001
         for (x, y) in [(a**b, op(a, b)) for a in range(0, 12) for b in range(0, 4)]:
             self.assertEqual(x, y)
 
     def test_div(self):
         """Test bitwise division."""
-        op = lambda a, b: int(div(bitlist(a), bitlist(b)))
+        op = lambda a, b: int(div(bitlist(a), bitlist(b))) # pylint: disable=C3001
         for (x, y) in [(a//b, op(a, b)) for a in range(0, 12) for b in range(1, 12)]:
             self.assertEqual(x, y)
