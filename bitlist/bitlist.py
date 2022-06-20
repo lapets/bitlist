@@ -1,5 +1,5 @@
 """
-Minimal Python library for working with bit vectors natively.
+Pure-Python library for working with bit vectors.
 """
 from __future__ import annotations
 from typing import Optional, Union, Sequence, Set
