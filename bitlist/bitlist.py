@@ -10,7 +10,11 @@ class bitlist:
     """
     Data structure for representing bit vectors.
     """
-    def __init__(self: bitlist, argument=None, length: Optional[int] = None):
+    def __init__(
+            self: bitlist,
+            argument: Union[int, str, bytes, bytearray, list, bitlist, None] = None,
+            length: Optional[int] = None
+        ):
         """
         Parse argument depending on its type and build a bit vector instance.
 
@@ -84,11 +88,11 @@ class bitlist:
 
         elif isinstance(argument, bitlist):
             # Make constructor idempotent (but have it iterate
-            # to reflect the behavior of `list(...)`.
+            # to reflect the behavior of ``list``.
             self.bits = bytearray(list(argument.bits))
 
         else:
-            raise ValueError("bitlist constructor received unsupported argument")
+            raise ValueError('bitlist constructor received unsupported argument')
 
         if length is not None:
             # Pad or truncate the bit vector to ensure the specified length.
@@ -211,7 +215,7 @@ class bitlist:
         if isinstance(other, int):
             return bitlist(list(reversed(list(self.bits)))*other)
 
-        raise ValueError("repetition parameter must be an integer")
+        raise ValueError('repetition parameter must be an integer')
 
     def __truediv__(
         self: bitlist, other: Union[int, Set[int], Sequence[int]]
@@ -220,7 +224,8 @@ class bitlist:
         The division operator can be used to partition a bit vector into the
         specified number of parts, into parts of a specified length, or into
         a sequence of parts in which each part's length is specified in a
-        sequence of integers.
+        sequence of integers (leveraging and mirroring the capabilities of the
+        :obj:`~parts.parts.parts` function).
 
         >>> bitlist('11010001') / 2
         [bitlist('1101'), bitlist('0001')]
@@ -262,18 +267,18 @@ class bitlist:
         TypeError: bitlist indices must be integers or slices
         """
         if isinstance(key, int):
-            if key < 0: # Support "big-endian" interface using negative indices.
+            if key < 0: # Support big-endian interface using negative indices.
                 return self.bits[abs(key)-1] if abs(key) <= len(self.bits) else 0
 
             if key < len(self.bits):
                 return self.bits[len(self.bits) - 1 - key]
 
-            raise IndexError("bitlist index out of range")
+            raise IndexError('bitlist index out of range')
 
         if isinstance(key, slice):
             return bitlist(list(reversed(self.bits))[key])
 
-        raise TypeError("bitlist indices must be integers or slices")
+        raise TypeError('bitlist indices must be integers or slices')
 
     def __setitem__(self: bitlist, i: int, b: int):
         """
@@ -288,7 +293,7 @@ class bitlist:
           ...
         IndexError: bitlist index out of range
         """
-        if i < 0: # Support "big-endian" interface using negative indices.
+        if i < 0: # Support big-endian interface using negative indices.
             self.bits =\
                 bytearray([
                     (self[j] if j != i else b)
@@ -302,7 +307,7 @@ class bitlist:
                     for j in range(0, len(self.bits))
                 ])
         else:
-            raise IndexError("bitlist index out of range")
+            raise IndexError('bitlist index out of range')
 
     def __lshift__(self: bitlist, n: Union[int, Set[int]]) -> bitlist:
         """
@@ -371,7 +376,7 @@ class bitlist:
         """
         if len(self) != len(other):
             raise ValueError(
-                "arguments to logical operations must have equal lengths"
+                'arguments to logical operations must have equal lengths'
             )
 
         return bitlist(list(reversed(
@@ -391,7 +396,7 @@ class bitlist:
         """
         if len(self) != len(other):
             raise ValueError(
-                "arguments to logical operations must have equal lengths"
+                'arguments to logical operations must have equal lengths'
             )
         return bitlist(list(reversed(
             [a | b for (a, b) in zip(self.bits, other.bits)]
@@ -410,7 +415,7 @@ class bitlist:
         """
         if len(self) != len(other):
             raise ValueError(
-                "arguments to logical operations must have equal lengths"
+                'arguments to logical operations must have equal lengths'
             )
         return bitlist(list(reversed(
             [a ^ b for (a, b) in zip(self.bits, other.bits)]
@@ -428,7 +433,7 @@ class bitlist:
 
     def __bool__(self: bitlist) -> bool:
         """
-        Any non-zero instance is interpreted as `True`.
+        Any non-zero instance is interpreted as ``True``.
 
         >>> bool(bitlist('0100'))
         True
@@ -525,5 +530,5 @@ class bitlist:
         """
         return int(self) >= int(other)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     doctest.testmod() # pragma: no cover
