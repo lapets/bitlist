@@ -37,7 +37,46 @@ The library can be imported in the usual way::
     import bitlist
     from bitlist import bitlist
 
-A basic example of usage (a bitwise addition function) is provided below::
+Examples
+^^^^^^^^
+
+.. |bitlist| replace:: ``bitlist``
+.. _bitlist: https://bitlist.readthedocs.io/en/latest/_source/bitlist.html#bitlist.bitlist.bitlist
+
+This library makes it possible to construct bit vectors from a variety of representations (including integers, bytes-like objects, strings of binary digits, lists of binary digits, and other bit vectors). Integer arguments are converted into a big-endian binary representation::
+
+    >>> bitlist(123)
+    bitlist('1111011')
+    >>> bitlist(bytes([255, 254]))
+    bitlist('1111111111111110')
+    >>> bitlist('101')
+    bitlist('101')
+    >>> bitlist([1, 0, 1, 1])
+    bitlist('1011')
+    >>> bitlist(bitlist('1010'))
+    bitlist('1010')
+
+The ``length`` parameter can be used to specify the length of the bit vector::
+
+    >>> bitlist(bytes([123]), 16)
+    bitlist('0000000001111011')
+    >>> bitlist(16, 64)
+    bitlist('0000000000000000000000000000000000000000000000000000000000010000')
+    >>> bitlist(bitlist(123), 8)
+    bitlist('01111011')
+
+If the ``length`` parameter has a value that is less than the minimum number of bits that would be included according to the default constructor behaviors, the bit vector is truncated *on the left-hand side* to match the specified length::
+
+    >>> bitlist(bytes([123]), 7)
+    bitlist('1111011')
+    >>> bitlist(bytes([123]), 4)
+    bitlist('1011')
+    >>> bitlist(bytes([123]), 2)
+    bitlist('11')
+    >>> bitlist(bytes([123]), 0)
+    bitlist('')
+
+`Concatenation <https://bitlist.readthedocs.io/en/latest/_source/bitlist.html#bitlist.bitlist.bitlist.__add__>`__, `partitioning <https://bitlist.readthedocs.io/en/latest/_source/bitlist.html#bitlist.bitlist.bitlist.__truediv__>`__, `subscription and slicing <https://bitlist.readthedocs.io/en/latest/_source/bitlist.html#bitlist.bitlist.bitlist.__getitem__>`__, `shift and rotation <https://bitlist.readthedocs.io/en/latest/_source/bitlist.html#bitlist.bitlist.bitlist.__lshift__>`__, `comparison <https://bitlist.readthedocs.io/en/latest/_source/bitlist.html#bitlist.bitlist.bitlist.__eq__>`__, and `logical <https://bitlist.readthedocs.io/en/latest/_source/bitlist.html#bitlist.bitlist.bitlist.__and__>`__ operations are also supported by instances of the |bitlist|_ class. The larger example below -- a bitwise addition function -- illustrates the use of various operators supported by instances of the |bitlist|_ class::
 
     from bitlist import bitlist
 

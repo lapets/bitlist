@@ -8,7 +8,125 @@ from parts import parts
 
 class bitlist:
     """
-    Data structure for representing bit vectors.
+    Data structure for representing bit vectors. The constructor accepts a
+    variety of input types (including integers, bytes-like objects, strings
+    of binary digits, lists of binary digits, and other :obj:`bitlist`
+    instances) and parses them in an appropriate manner to build a bit vector.
+    Integer arguments are converted into a big-endian binary representation.
+
+    >>> bitlist(1)
+    bitlist('1')
+    >>> bitlist(123)
+    bitlist('1111011')
+    >>> bitlist('1111011')
+    bitlist('1111011')
+    >>> bitlist(bytes([255, 254]))
+    bitlist('1111111111111110')
+    >>> bitlist([1, 0, 1, 1])
+    bitlist('1011')
+    >>> bitlist(bitlist('1010'))
+    bitlist('1010')
+
+    When the constructor is applied to a bytes-like object, the leading zero
+    digits (*i.e.*, those on the left-hand side) **are retained** (up to the
+    least multiple of eight larger than the minimum number of binary digits
+    required).
+
+    >>> bitlist(bytes([123]))
+    bitlist('01111011')
+    >>> bitlist(bytearray([123, 123]))
+    bitlist('0111101101111011')
+    >>> bitlist('01111011')
+    bitlist('01111011')
+
+    When the constructor is applied to an integer argument, the created bit
+    vector has leading (*i.e.*, left-hand) zeros truncated and contains the
+    minimum number of bits necessary to represent the supplied argument
+    (using a big-endian representation).
+
+    >>> bitlist(2)
+    bitlist('10')
+    >>> bitlist(16)
+    bitlist('10000')
+
+    The above implies that the empty bit vector represents (and is equivalent
+    to) the numerical value of zero.
+
+    >>> bitlist() == bitlist(0)
+    True
+    >>> bitlist() == bitlist('0')
+    True
+    >>> bitlist() == bitlist([])
+    True
+
+    For all other input types, the length of the vector (and consequently the
+    number of leading zeos) is preserved.
+
+    >>> bitlist('0000')
+    bitlist('0000')
+    >>> bitlist([0, 1, 1])
+    bitlist('011')
+    >>> bitlist([0, 0, 1, 1])
+    bitlist('0011')
+    >>> bitlist(bitlist('00010'))
+    bitlist('00010')
+
+    The ``length`` parameter can be used to specify the length of the bit
+    vector, overriding the default behaviors.
+
+    >>> bitlist(bytes([123]), 16)
+    bitlist('0000000001111011')
+    >>> bitlist(16, 64)
+    bitlist('0000000000000000000000000000000000000000000000000000000000010000')
+    >>> bitlist(bitlist(123), 8)
+    bitlist('01111011')
+
+    If the ``length`` parameter has a value that is less than the minimum
+    number of bits that would be included according to a default behavior, the
+    bit vector is truncated *on the left-hand side* to match the specified
+    length.
+
+    >>> bitlist(bytes([123]), 7)
+    bitlist('1111011')
+    >>> bitlist(bytes([123]), 4)
+    bitlist('1011')
+    >>> bitlist(bytes([123]), 2)
+    bitlist('11')
+    >>> bitlist(bytes([123]), 0)
+    bitlist('')
+    >>> bitlist(123, 0)
+    bitlist('')
+    >>> bitlist([1, 1, 1], 0)
+    bitlist('')
+
+    A :obj:`bitlist` instance can be converted into an integer using the
+    built-in :obj:`int` function. By default, a big-endian representation of
+    integers is used. The recommended approach for switching to a
+    little-endian representation is to reverse the bit vector.
+
+    >>> b = bitlist('1111011')
+    >>> int(b)
+    123
+    >>> int(bitlist(list(reversed(b))))
+    111
+
+    The :obj:`bitlist` constructor can be used to create a copy of an instance.
+
+    >>> xs = bitlist(123, 8)
+    >>> ys = bitlist(xs)
+    >>> ys[0] = 1
+    >>> xs
+    bitlist('01111011')
+    >>> ys
+    bitlist('11111011')
+
+    Any attempt to construct an instance using unsupported arguments raises an
+    exception.
+
+    >>> bitlist(float(1))
+    Traceback (most recent call last):
+      ...
+    ValueError: bitlist constructor received unsupported argument
     """
     def __init__(
             self: bitlist,
@@ -17,40 +135,6 @@ class bitlist:
         ):
         """
         Parse argument depending on its type and build a bit vector instance.
-
-        >>> bitlist() == bitlist('0')
-        True
-        >>> bitlist(123)
-        bitlist('1111011')
-        >>> int(bitlist('1111011'))
-        123
-        >>> bitlist(bytes([123]))
-        bitlist('01111011')
-        >>> bitlist(bytes([123]), 16)
-        bitlist('0000000001111011')
-        >>> bitlist(16, 64)
-        bitlist('0000000000000000000000000000000000000000000000000000000000010000')
-        >>> bitlist(bitlist('1010'))
-        bitlist('1010')
-        >>> bitlist(bitlist(123), 8)
-        bitlist('01111011')
-        >>> xs = bitlist(123, 8)
-        >>> ys = bitlist(xs)
-        >>> ys[0] = 1
-        >>> xs
-        bitlist('01111011')
-        >>> ys
-        bitlist('11111011')
-        >>> bitlist(bytes([123]), 4)
-        bitlist('1011')
-        >>> bitlist(bytes([123, 123]))
-        bitlist('0111101101111011')
-        >>> bitlist(bytes([1, 2, 3]))
-        bitlist('000000010000001000000011')
-        >>> bitlist(float(1))
-        Traceback (most recent call last):
-          ...
-        ValueError: bitlist constructor received unsupported argument
         """
         if argument is None:
             # By default, always return the bit vector representing zero.
