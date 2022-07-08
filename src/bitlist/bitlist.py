@@ -36,13 +36,17 @@ class bitlist:
     bitlist('01111011')
     >>> bitlist(bytearray([123, 123]))
     bitlist('0111101101111011')
+
+    When the constructor is applied to a string (consisting only of binary
+    digits), leading zero digits are also retained.
+
     >>> bitlist('01111011')
     bitlist('01111011')
 
-    When the constructor is applied to an integer argument, the created bit
-    vector has leading (*i.e.*, left-hand) zeros truncated and contains the
-    minimum number of bits necessary to represent the supplied argument
-    (using a big-endian representation).
+    However, when the constructor is applied to an integer argument, the
+    created bit vector has leading (*i.e.*, left-hand) zeros truncated and
+    contains the minimum number of bits necessary to represent the supplied
+    argument (using a big-endian representation).
 
     >>> bitlist(2)
     bitlist('10')
@@ -54,10 +58,22 @@ class bitlist:
 
     >>> bitlist() == bitlist(0)
     True
-    >>> bitlist() == bitlist('0')
+    >>> bitlist() == bitlist('0') == bitlist('00') == bitlist('000')
+    True
+    >>> bitlist() == bitlist('')
     True
     >>> bitlist() == bitlist([])
     True
+
+    While the equality method :obj:`__eq__` determines equality between two bit
+    vectors based on the integer values they represent, the fact that leading
+    zero digits are retained in some cases means that two equivalent bit vectors
+    *may have different lengths*.
+
+    >>> bitlist('0') == bitlist('000')
+    True
+    >>> len(bitlist('0')) == len(bitlist('000'))
+    False
 
     For all other input types, the length of the vector (and consequently the
     number of leading zeos) is preserved.
@@ -93,11 +109,11 @@ class bitlist:
     >>> bitlist(bytes([123]), 2)
     bitlist('11')
     >>> bitlist(bytes([123]), 0)
-    bitlist('')
+    bitlist()
     >>> bitlist(123, 0)
-    bitlist('')
+    bitlist()
     >>> bitlist([1, 1, 1], 0)
-    bitlist('')
+    bitlist()
 
     A :obj:`bitlist` instance can be converted into an integer using the
     built-in :obj:`int` function. By default, a big-endian representation of
@@ -143,31 +159,29 @@ class bitlist:
         elif isinstance(argument, int):
             # Convert any integer into its bit representation,
             # starting with the first non-zero digit.
-            self.bits =\
-                bytearray(reversed([int(b) for b in f'{argument:b}']))
+            self.bits = bytearray(reversed([int(b) for b in f'{argument:b}']))
 
-        elif isinstance(argument, str) and len(argument) > 0:
+        elif isinstance(argument, str):
             # Convert string of binary digit characters.
-            self.bits =\
-                bytearray(reversed([int(b) for b in argument]))
+            self.bits = bytearray(reversed([int(b) for b in argument]))
 
         elif isinstance(argument, (bytes, bytearray)):
             # Convert bytes-like object into its constituent bits,
             # with exactly eight bits per byte (i.e., leading zeros
             # are included).
-            self.bits =\
+            self.bits = \
                 bytearray([
                     b
                     for byte in reversed(argument)
                     for b in [(byte >> i) % 2 for i in range(0, 8)]
                 ])
 
-        elif isinstance(argument, list) and\
+        elif isinstance(argument, list) and \
              all(isinstance(x, int) and x in (0, 1) for x in argument):
             # Convert list of binary digits represented as integers.
-            self.bits =\
-                bytearray(reversed(argument))\
-                if len(argument) > 0 else\
+            self.bits = \
+                bytearray(reversed(argument)) \
+                if len(argument) > 0 else \
                 bytearray([0])
 
         elif isinstance(argument, bitlist):
@@ -203,7 +217,10 @@ class bitlist:
         >>> bitlist('01')
         bitlist('01')
         """
-        return "bitlist('" + self.bin() + "')"
+        return \
+            'bitlist(' + \
+            (("'" + self.bin() + "'") if len(self.bits) > 0 else '') + \
+            ')'
 
     def __repr__(self: bitlist) -> str:
         """
@@ -378,14 +395,14 @@ class bitlist:
         IndexError: bitlist index out of range
         """
         if i < 0: # Support big-endian interface using negative indices.
-            self.bits =\
+            self.bits = \
                 bytearray([
                     (self[j] if j != i else b)
                     for j in range(-1, min(-len(self.bits), -abs(i)) - 1, -1)
                 ])
         elif i < len(self.bits):
             i = len(self.bits) - 1 - i
-            self.bits =\
+            self.bits = \
                 bytearray([
                     (self.bits[j] if j != i else b)
                     for j in range(0, len(self.bits))

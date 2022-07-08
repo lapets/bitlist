@@ -74,7 +74,7 @@ If the ``length`` parameter has a value that is less than the minimum number of 
     >>> bitlist(bytes([123]), 2)
     bitlist('11')
     >>> bitlist(bytes([123]), 0)
-    bitlist('')
+    bitlist()
 
 `Concatenation <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__add__>`__, `partitioning <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__truediv__>`__, `subscription and slicing <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__getitem__>`__, `shift and rotation <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__lshift__>`__, `comparison <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__eq__>`__, and `logical <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__and__>`__ operations are also supported by instances of the |bitlist|_ class. The larger example below -- a bitwise addition function -- illustrates the use of various operators supported by instances of the |bitlist|_ class::
 
