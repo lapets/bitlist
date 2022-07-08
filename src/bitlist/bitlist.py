@@ -2,15 +2,16 @@
 Pure-Python library for working with bit vectors.
 """
 from __future__ import annotations
-from typing import Optional, Union, Sequence, Set
+from typing import Union, Optional, Set, Sequence, Iterable
 import doctest
+import collections.abc
 from parts import parts
 
 class bitlist:
     """
     Data structure for representing bit vectors. The constructor accepts a
     variety of input types (including integers, bytes-like objects, strings
-    of binary digits, lists of binary digits, and other :obj:`bitlist`
+    of binary digits, iterables of binary digits, and other :obj:`bitlist`
     instances) and parses them in an appropriate manner to build a bit vector.
     Integer arguments are converted into a big-endian binary representation.
 
@@ -37,8 +38,8 @@ class bitlist:
     >>> bitlist(bytearray([123, 123]))
     bitlist('0111101101111011')
 
-    When the constructor is applied to a string (consisting only of binary
-    digits), leading zero digits are also retained.
+    When the constructor is applied to a string (consisting only of characters
+    that correspond to binary digits), leading zero digits are also retained.
 
     >>> bitlist('01111011')
     bitlist('01111011')
@@ -86,6 +87,26 @@ class bitlist:
     bitlist('0011')
     >>> bitlist(bitlist('00010'))
     bitlist('00010')
+
+    Only strings that consist of characters corresponding to binary digits
+    are accepted by the constructor.
+
+    >>> bitlist('abcd')
+    Traceback (most recent call last):
+      ...
+    ValueError: each character in string must be '0' or '1'
+
+    To convert the underlying binary representation of a string into a bit
+    vector, it is necessary to encode the string as a bytes-like object.
+
+    >>> bitlist('abcd'.encode('utf8'))
+    bitlist('01100001011000100110001101100100')
+
+    To convert a hexadecimal value represented as a string into a bit vector,
+    it is necessary to convert the hexadecimal string into a bytes-like object.
+
+    >>> bitlist(bytes.fromhex('abcd'))
+    bitlist('1010101111001101')
 
     The ``length`` parameter can be used to specify the length of the bit
     vector, overriding the default behaviors.
@@ -139,14 +160,22 @@ class bitlist:
     Any attempt to construct an instance using unsupported arguments raises an
     exception.
 
+    >>> bitlist([1.1, 2.2, 3.3])
+    Traceback (most recent call last):
+      ...
+    TypeError: items in iterable must be integers
+    >>> bitlist([2, 3, 4, 5])
+    Traceback (most recent call last):
+      ...
+    ValueError: each integer in iterable must be 0 or 1
     >>> bitlist(float(1))
     Traceback (most recent call last):
       ...
-    ValueError: bitlist constructor received unsupported argument
+    TypeError: bitlist constructor received unsupported argument
     """
-    def __init__(
+    def __init__( # pylint: disable=R0912
             self: bitlist,
-            argument: Union[int, str, bytes, bytearray, list, bitlist, None] = None,
+            argument: Union[int, str, bytes, bytearray, bitlist, Iterable[int], None] = None,
             length: Optional[int] = None
         ):
         """
@@ -162,6 +191,9 @@ class bitlist:
             self.bits = bytearray(reversed([int(b) for b in f'{argument:b}']))
 
         elif isinstance(argument, str):
+            if not all(c in ('0', '1') for c in argument):
+                raise ValueError("each character in string must be '0' or '1'")
+
             # Convert string of binary digit characters.
             self.bits = bytearray(reversed([int(b) for b in argument]))
 
@@ -176,21 +208,25 @@ class bitlist:
                     for b in [(byte >> i) % 2 for i in range(0, 8)]
                 ])
 
-        elif isinstance(argument, list) and \
-             all(isinstance(x, int) and x in (0, 1) for x in argument):
-            # Convert list of binary digits represented as integers.
-            self.bits = \
-                bytearray(reversed(argument)) \
-                if len(argument) > 0 else \
-                bytearray([0])
-
         elif isinstance(argument, bitlist):
             # Make constructor idempotent (but have it iterate
             # to reflect the behavior of ``list``.
             self.bits = bytearray(list(argument.bits))
 
+        elif isinstance(argument, collections.abc.Iterable):
+            items = list(argument)
+
+            if not all(isinstance(item, int) for item in items):
+                raise TypeError('items in iterable must be integers')
+
+            if not all(item in (0, 1) for item in items):
+                raise ValueError('each integer in iterable must be 0 or 1')
+
+            # Convert list of binary digits represented as integers.
+            self.bits = bytearray(reversed(items)) if len(items) > 0 else bytearray([0])
+
         else:
-            raise ValueError('bitlist constructor received unsupported argument')
+            raise TypeError('bitlist constructor received unsupported argument')
 
         if length is not None:
             # Pad or truncate the bit vector to ensure the specified length.
