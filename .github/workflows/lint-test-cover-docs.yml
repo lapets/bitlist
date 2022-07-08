@@ -18,7 +18,7 @@ jobs:
       - name: Lint and test module.
         run: |
           pip install -U .[lint,test]
-          python -m pylint bitlist ./test/test_bitlist.py # Check against linting rules.
+          python -m pylint bitlist test/test_bitlist.py # Check against linting rules.
           python -m pytest # Run tests.
       - name: Publish coverage results.
         run: |
@@ -30,4 +30,4 @@ jobs:
       - name: Test auto-generation of documentation.
         run: |
           pip install -U .[docs]
-          cd docs && sphinx-apidoc -f -E --templatedir=_templates -o _source .. ../setup.py && make html && cd ..
+          cd docs && sphinx-apidoc -f -E --templatedir=_templates -o _source .. && make html && cd ..

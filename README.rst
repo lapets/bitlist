@@ -24,7 +24,7 @@ Pure-Python library for working with bit vectors.
 
 Purpose
 -------
-This library allows programmers to work with a native representation of bit vectors within Python.
+This library allows programmers to work with bit vectors using a pure-Python data structure. Its design prioritizes interoperability with built-in Python classes and operators.
 
 Installation and Usage
 ----------------------
@@ -41,7 +41,7 @@ Examples
 ^^^^^^^^
 
 .. |bitlist| replace:: ``bitlist``
-.. _bitlist: https://bitlist.readthedocs.io/en/latest/_source/bitlist.html#bitlist.bitlist.bitlist
+.. _bitlist: https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist
 
 This library makes it possible to construct bit vectors from a variety of representations (including integers, bytes-like objects, strings of binary digits, lists of binary digits, and other bit vectors). Integer arguments are converted into a big-endian binary representation::
 
@@ -76,7 +76,7 @@ If the ``length`` parameter has a value that is less than the minimum number of 
     >>> bitlist(bytes([123]), 0)
     bitlist('')
 
-`Concatenation <https://bitlist.readthedocs.io/en/latest/_source/bitlist.html#bitlist.bitlist.bitlist.__add__>`__, `partitioning <https://bitlist.readthedocs.io/en/latest/_source/bitlist.html#bitlist.bitlist.bitlist.__truediv__>`__, `subscription and slicing <https://bitlist.readthedocs.io/en/latest/_source/bitlist.html#bitlist.bitlist.bitlist.__getitem__>`__, `shift and rotation <https://bitlist.readthedocs.io/en/latest/_source/bitlist.html#bitlist.bitlist.bitlist.__lshift__>`__, `comparison <https://bitlist.readthedocs.io/en/latest/_source/bitlist.html#bitlist.bitlist.bitlist.__eq__>`__, and `logical <https://bitlist.readthedocs.io/en/latest/_source/bitlist.html#bitlist.bitlist.bitlist.__and__>`__ operations are also supported by instances of the |bitlist|_ class. The larger example below -- a bitwise addition function -- illustrates the use of various operators supported by instances of the |bitlist|_ class::
+`Concatenation <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__add__>`__, `partitioning <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__truediv__>`__, `subscription and slicing <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__getitem__>`__, `shift and rotation <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__lshift__>`__, `comparison <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__eq__>`__, and `logical <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__and__>`__ operations are also supported by instances of the |bitlist|_ class. The larger example below -- a bitwise addition function -- illustrates the use of various operators supported by instances of the |bitlist|_ class::
 
     from bitlist import bitlist
 
@@ -98,23 +98,21 @@ The testing suite ``test/test_bitlist.py`` contains additional examples of bitwi
 
 Development
 -----------
-All installation and development dependencies are managed using `setuptools <https://pypi.org/project/setuptools>`__ and are fully specified in ``setup.py``. The ``extras_require`` parameter is used to `specify optional requirements <https://setuptools.pypa.io/en/latest/userguide/dependency_management.html#optional-dependencies>`__ for various development tasks. This makes it possible to specify additional options (such as ``docs``, ``lint``, and so on) when performing installation using `pip <https://pypi.org/project/pip>`__::
+All installation and development dependencies are fully specified in ``pyproject.toml``. The ``project.optional-dependencies`` object is used to `specify optional requirements <https://peps.python.org/pep-0621>`__ for various development tasks. This makes it possible to specify additional options (such as ``docs``, ``lint``, and so on) when performing installation using `pip <https://pypi.org/project/pip>`__::
 
     python -m pip install .[docs,lint]
 
 Documentation
 ^^^^^^^^^^^^^
-.. include:: toc.rst
-
 The documentation can be generated automatically from the source files using `Sphinx <https://www.sphinx-doc.org>`__::
 
     python -m pip install .[docs]
     cd docs
-    sphinx-apidoc -f -E --templatedir=_templates -o _source .. ../setup.py && make html
+    sphinx-apidoc -f -E --templatedir=_templates -o _source .. && make html
 
 Testing and Conventions
 ^^^^^^^^^^^^^^^^^^^^^^^
-All unit tests are executed and their coverage is measured when using `pytest <https://docs.pytest.org>`__ (see ``setup.cfg`` for configuration details)::
+All unit tests are executed and their coverage is measured when using `pytest <https://docs.pytest.org>`__ (see the ``pyproject.toml`` file for configuration details)::
 
     python -m pip install .[test]
     python -m pytest
@@ -123,10 +121,10 @@ The subset of the unit tests included in the module itself can be executed using
 
     python bitlist/bitlist.py -v
 
-Style conventions are enforced using `Pylint <https://www.pylint.org>`__::
+Style conventions are enforced using `Pylint <https://pylint.pycqa.org>`__::
 
     python -m pip install .[lint]
-    python -m pylint bitlist ./test/test_bitlist.py
+    python -m pylint bitlist test/test_bitlist.py
 
 Contributions
 ^^^^^^^^^^^^^
@@ -142,11 +140,16 @@ This library can be published as a `package on PyPI <https://pypi.org/project/bi
 
     python -m pip install .[publish]
 
-Remove any old build/distribution files. Then, package the source into a distribution archive using the `wheel <https://pypi.org/project/wheel>`__ package::
+Ensure that the correct version number appears in ``pyproject.toml``, and that any links in this README document to the Read the Docs documentation of this package (or its dependencies) have appropriate version numbers. Also ensure that the Read the Docs project for this library has an `automation rule <https://docs.readthedocs.io/en/stable/automation-rules.html>`__ that activates and sets as the default all tagged versions. Create and push a tag for this version (replacing ``?.?.?`` with the version number)::
 
-    rm -rf dist *.egg-info
-    python setup.py sdist bdist_wheel
+    git tag ?.?.?
+    git push origin ?.?.?
 
-Finally, upload the package distribution archive to `PyPI <https://pypi.org>`__ using the `twine <https://pypi.org/project/twine>`__ package::
+Remove any old build/distribution files. Then, package the source into a distribution archive::
+
+    rm -rf build dist *.egg-info
+    python -m build --sdist --wheel .
+
+Finally, upload the package distribution archive to `PyPI <https://pypi.org>`__::
 
     python -m twine upload dist/*
