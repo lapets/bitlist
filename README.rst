@@ -56,9 +56,9 @@ This library makes it possible to construct bit vectors from a variety of repres
     >>> bitlist(bitlist('1010'))
     bitlist('1010')
 
-The ``length`` parameter can be used to specify the length of the bit vector::
+The optional ``length`` parameter can be used to specify the length of the created bit vector (padding consisting of zero bits is applied automatically *on the left-hand size*, if necessary)::
 
-    >>> bitlist(bytes([123]), 16)
+    >>> bitlist(bytes([123]), length=16)
     bitlist('0000000001111011')
     >>> bitlist(16, 64)
     bitlist('0000000000000000000000000000000000000000000000000000000000010000')
@@ -67,7 +67,7 @@ The ``length`` parameter can be used to specify the length of the bit vector::
 
 If the ``length`` parameter has a value that is less than the minimum number of bits that would be included according to the default constructor behaviors, the bit vector is truncated *on the left-hand side* to match the specified length::
 
-    >>> bitlist(bytes([123]), 7)
+    >>> bitlist(bytes([123]), length=7)
     bitlist('1111011')
     >>> bitlist(bytes([123]), 4)
     bitlist('1011')
@@ -78,23 +78,21 @@ If the ``length`` parameter has a value that is less than the minimum number of 
 
 `Concatenation <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__add__>`__, `partitioning <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__truediv__>`__, `subscription and slicing <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__getitem__>`__, `shift and rotation <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__lshift__>`__, `comparison <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__eq__>`__, and `logical <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__and__>`__ operations are also supported by instances of the |bitlist|_ class. The larger example below -- a bitwise addition function -- illustrates the use of various operators supported by instances of the |bitlist|_ class::
 
-    from bitlist import bitlist
+    >>> def add(x, y):
+    ...     """Bitwise addition algorithm."""
+    ...     r = bitlist(0)
+    ...     carry = 0
+    ...     # Use negative indices for big-endian interface.
+    ...     for i in range(1, max(len(x), len(y)) + 1):
+    ...         r[-i] = (x[-i] ^ y[-i]) ^ carry
+    ...         carry = (x[-i] & y[-i]) | (x[-i] & carry) | (y[-i] & carry)
+    ...     r[-(max(len(x), len(y)) + 1)] = carry
+    ...     return r
+    ...
+    >>> int(add(bitlist(123), bitlist(456)))
+    579
 
-    def add(x, y):
-        """Bitwise addition algorithm."""
-        r = bitlist(0)
-
-        # Upper bound is not inclusive.
-        # Use negative indices for big-endian interface.
-        carry = 0
-        for i in range(1, max(len(x), len(y)) + 1):
-            r[-i] = (x[-i] ^ y[-i]) ^ carry
-            carry = (x[-i] & y[-i]) | (x[-i] & carry) | (y[-i] & carry)
-        r[-(max(len(x), len(y)) + 1)] = carry
-
-        return r
-
-The testing suite ``test/test_bitlist.py`` contains additional examples of bitwise arithmetic operations implemented with the help of this library.
+The `testing script <https://bitlist.readthedocs.io/en/1.0.0/_source/test_bitlist.html>`_ that accompanies this library contains additional examples of bitwise arithmetic operations implemented with the help of |bitlist|_ operators.
 
 Development
 -----------
@@ -117,9 +115,10 @@ All unit tests are executed and their coverage is measured when using `pytest <h
     python -m pip install .[test]
     python -m pytest
 
-The subset of the unit tests included in the module itself can be executed using `doctest <https://docs.python.org/3/library/doctest.html>`__::
+The subset of the unit tests included in the module itself and the *documentation examples* that appear in the testing script can be executed separately using `doctest <https://docs.python.org/3/library/doctest.html>`_::
 
     python src/bitlist/bitlist.py -v
+    python test/test_bitlist.py -v
 
 Style conventions are enforced using `Pylint <https://pylint.pycqa.org>`__::
 

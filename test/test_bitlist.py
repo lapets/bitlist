@@ -1,14 +1,29 @@
 """
-Test suite containing functional unit tests (based on bit vector
-implementations of common arithmetic operations) for the class and
-some of its methods.
+Test suite containing examples and functional unit tests (based on bit vector
+implementations of common arithmetic operations) that demonstrate how this
+library's features can be used.
+
+To view the source code of an example function, click its **[source]** link.
 """
+from __future__ import annotations
+import doctest
 from unittest import TestCase
 
-from bitlist.bitlist import bitlist
+try:
+    from bitlist import * # pylint: disable=W0401, W0614
+except: # pylint: disable=W0702
+    # Support validation of docstrings in this script via its direct execution.
+    import sys
+    sys.path.append('./bitlist')
+    from bitlist.bitlist import bitlist
 
 def add(x, y):
-    """Bitwise addition algorithm."""
+    """
+    Bitwise addition algorithm.
+
+    >>> int(add(bitlist(123), bitlist(456)))
+    579
+    """
     r = bitlist(0)
 
     # Upper bound is not inclusive.
@@ -22,7 +37,12 @@ def add(x, y):
     return r
 
 def mul(x, y):
-    """Bitwise multiplication algorithm."""
+    """
+    Bitwise multiplication algorithm.
+
+    >>> int(mul(bitlist(123), bitlist(456)))
+    56088
+    """
     r = bitlist(0)
 
     # Upper bound is not inclusive.
@@ -35,7 +55,12 @@ def mul(x, y):
     return r
 
 def exp(x, y):
-    """Bitwise exponentiation algorithm."""
+    """
+    Bitwise exponentiation algorithm.
+
+    >>> int(exp(bitlist(123), bitlist(5)))
+    28153056843
+    """
     r = bitlist(1)
 
     # Upper bound is not inclusive.
@@ -48,7 +73,12 @@ def exp(x, y):
     return r
 
 def div(x, y):
-    """Bitwise division algorithm."""
+    """
+    Bitwise integer division algorithm.
+
+    >>> int(div(bitlist(12345), bitlist(678)))
+    18
+    """
     if y > x:
         return bitlist(0)
 
@@ -57,8 +87,8 @@ def div(x, y):
 
     t = bitlist(0)
     q = bitlist(0)
-    p = bitlist(2**len(x))
-    for _ in range(0, len(x)+1):
+    p = bitlist(2 ** len(x))
+    for _ in range(0, len(x) + 1):
         if add(t, y) <= x:
             t = add(t, y)
             q = add(q, p)
@@ -98,3 +128,6 @@ class Test_bitlist(TestCase):
         op = lambda a, b: int(div(bitlist(a), bitlist(b))) # pylint: disable=C3001
         for (x, y) in [(a//b, op(a, b)) for a in range(0, 12) for b in range(1, 12)]:
             self.assertEqual(x, y)
+
+# Always invoke the doctests in this module.
+doctest.testmod()

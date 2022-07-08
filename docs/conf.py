@@ -13,6 +13,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../src')) # Prioritize local module copy.
+sys.path.insert(0, os.path.abspath('..')) # Ensure that test script is found.
 
 
 # -- Project information -----------------------------------------------------
@@ -70,6 +71,16 @@ autodoc_default_options = {
     ])
 }
 autodoc_preserve_defaults = True
+
+# Do not emit documentation for certain definitions.
+
+def autodoc_skip_member_handler(app, what, name, obj, skip, options):
+    # Avoid emitting testing class when generating documentation for
+    # the examples in the testing script.
+    return skip | (name == 'Test_bitlist')
+
+def setup(app):
+    app.connect('autodoc-skip-member', autodoc_skip_member_handler)
 
 # Allow references/links to definitions found in the Python documentation
 # and in the documentation for this package's dependencies.

@@ -3,3 +3,4 @@
    :hidden:
 
    _source/bitlist
+   _source/test_bitlist
