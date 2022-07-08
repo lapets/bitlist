@@ -28,6 +28,76 @@ class bitlist:
     >>> bitlist(bitlist('1010'))
     bitlist('1010')
 
+    The :obj:`fromhex` method can be used to convert a hexadecimal string
+    into an instance. This is equivalent to converting the hexadecimal string
+    into a bytes-like object and then creating a bit vector from that object.
+
+    >>> bitlist.fromhex('abcd')
+    bitlist('1010101111001101')
+    >>> bitlist(bytes.fromhex('abcd'))
+    bitlist('1010101111001101')
+
+    A :obj:`bitlist` instance can be converted into an integer using the
+    built-in :obj:`int` function. By default, a big-endian representation of
+    integers is used. The recommended approach for switching to a
+    little-endian representation is to reverse the bit vector.
+
+    >>> b = bitlist('1111011')
+    >>> int(b)
+    123
+    >>> int(bitlist(list(reversed(b))))
+    111
+
+    An instance can be converted into a string of binary characters using
+    the :obj:`bin` method and into a hexadecimal string using the :obj:`hex`
+    method. Conversion to a bytes-like object is possible via the built-in
+    :obj:`to_bytes` method.
+
+    >>> b.bin()
+    '1111011'
+    >>> b.hex()
+    '7b'
+    >>> b.to_bytes().hex()
+    '7b'
+    >>> list(b.to_bytes())
+    [123]
+
+    An instance is itself a :obj:`~collections.abc.Sequence` and is iterable.
+    Iterating over an instance yields the sequence of bits (*i.e.*, integers
+    that are ``0`` or ``1``).
+
+    >>> [bit for bit in bitlist('10010011')]
+    [1, 0, 0, 1, 0, 0, 1, 1]
+
+    An individual bit can be retrieved (and assigned a new value) via its index.
+    Slice notation is also supported.
+
+    >>> b = bitlist('0101')
+    >>> b[3]
+    1
+    >>> b[3] = 0
+    >>> b
+    bitlist('0100')
+    >>> b[1:-1]
+    bitlist('10')
+
+    Instances are mutable. Conversion to an integer, binary string, or tuple is
+    recommended if a corresponding immutable object is required.
+
+    >>> tuple(bitlist('1010'))
+    (1, 0, 1, 0)
+
+    When the constructor is supplied a :obj:`bitlist` instance, a distinct copy
+    of the supplied instance is created.
+
+    >>> b = bitlist(123, 8)
+    >>> c = bitlist(b)
+    >>> c[0] = 1
+    >>> b
+    bitlist('01111011')
+    >>> c
+    bitlist('11111011')
+
     When the constructor is applied to a bytes-like object, the leading zero
     digits (*i.e.*, those on the left-hand side) **are retained** (up to the
     least multiple of eight larger than the minimum number of binary digits
@@ -45,9 +115,9 @@ class bitlist:
     bitlist('01111011')
 
     However, when the constructor is applied to an integer argument, the
-    created bit vector has leading (*i.e.*, left-hand) zeros truncated and
-    contains the minimum number of bits necessary to represent the supplied
-    argument (using a big-endian representation).
+    created bit vector has no leading (*i.e.*, left-hand) zeros and contains
+    the minimum number of bits necessary to represent the supplied argument
+    (using a big-endian representation).
 
     >>> bitlist(2)
     bitlist('10')
@@ -76,8 +146,8 @@ class bitlist:
     >>> len(bitlist('0')) == len(bitlist('000'))
     False
 
-    For all other input types, the length of the vector (and consequently the
-    number of leading zeos) is preserved.
+    For all other (non-integer) input types, the length of the vector (and
+    consequently the number of leading zeos) is preserved.
 
     >>> bitlist('0000')
     bitlist('0000')
@@ -102,14 +172,11 @@ class bitlist:
     >>> bitlist('abcd'.encode('utf8'))
     bitlist('01100001011000100110001101100100')
 
-    To convert a hexadecimal value represented as a string into a bit vector,
-    it is necessary to convert the hexadecimal string into a bytes-like object.
-
-    >>> bitlist(bytes.fromhex('abcd'))
-    bitlist('1010101111001101')
-
     The ``length`` parameter can be used to specify the length of the bit
-    vector, overriding the default behaviors.
+    vector, overriding the default behaviors. If the length parameter has a
+    value that is greater than the number of bits that would be included
+    according to a default behavior, the bit vector is padded with zero bits
+    *on the left-hand side* to match the specified length.
 
     >>> bitlist(bytes([123]), 16)
     bitlist('0000000001111011')
@@ -135,27 +202,6 @@ class bitlist:
     bitlist()
     >>> bitlist([1, 1, 1], 0)
     bitlist()
-
-    A :obj:`bitlist` instance can be converted into an integer using the
-    built-in :obj:`int` function. By default, a big-endian representation of
-    integers is used. The recommended approach for switching to a
-    little-endian representation is to reverse the bit vector.
-
-    >>> b = bitlist('1111011')
-    >>> int(b)
-    123
-    >>> int(bitlist(list(reversed(b))))
-    111
-
-    The :obj:`bitlist` constructor can be used to create a copy of an instance.
-
-    >>> xs = bitlist(123, 8)
-    >>> ys = bitlist(xs)
-    >>> ys[0] = 1
-    >>> xs
-    bitlist('01111011')
-    >>> ys
-    bitlist('11111011')
 
     Any attempt to construct an instance using unsupported arguments raises an
     exception.
@@ -405,7 +451,7 @@ class bitlist:
         """
         if isinstance(key, int):
             if key < 0: # Support big-endian interface using negative indices.
-                return self.bits[abs(key)-1] if abs(key) <= len(self.bits) else 0
+                return self.bits[abs(key) - 1] if abs(key) <= len(self.bits) else 0
 
             if key < len(self.bits):
                 return self.bits[len(self.bits) - 1 - key]

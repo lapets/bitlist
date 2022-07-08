@@ -76,6 +76,22 @@ If the ``length`` parameter has a value that is less than the minimum number of 
     >>> bitlist(bytes([123]), 0)
     bitlist()
 
+Bit vectors are iterable sequences of individual bits (where each bit is represented as an integer). Both slice notation and retrieval of individual bits by index are supported. Furthermore, methods are available for converting a bit vector into other common representations::
+
+    >>> b = bitlist('1111011')
+    >>> b[1:-1]
+    bitlist('11101')
+    >>> b[0]
+    1
+    >>> [bit for bit in b]
+    [1, 1, 1, 1, 0, 1, 1]
+    >>> b.bin()
+    '1111011'
+    >>> b.hex()
+    '7b'
+    >>> list(b.to_bytes())
+    [123]
+
 `Concatenation <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__add__>`__, `partitioning <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__truediv__>`__, `subscription and slicing <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__getitem__>`__, `shift and rotation <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__lshift__>`__, `comparison <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__eq__>`__, and `logical <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__and__>`__ operations are also supported by instances of the |bitlist|_ class. The larger example below -- a bitwise addition function -- illustrates the use of various operators supported by instances of the |bitlist|_ class::
 
     >>> def add(x, y):
