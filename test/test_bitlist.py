@@ -17,62 +17,57 @@ except: # pylint: disable=bare-except
     sys.path.append('./bitlist')
     from bitlist.bitlist import bitlist
 
-def add(x, y):
+def add(x: bitlist, y: bitlist) -> bitlist:
     """
     Bitwise addition algorithm.
 
     >>> int(add(bitlist(123), bitlist(456)))
     579
     """
-    r = bitlist(0)
+    r: bitlist = bitlist(0)
+    carry: int = 0 # Integer that represents an individual bit.
 
-    # Upper bound is not inclusive.
-    # Use negative indices for big-endian interface.
-    carry = 0
-    for i in range(1, max(len(x), len(y)) + 1):
+    # Use negative indices to simulate big-endian order of bits.
+    for i in range(1, max(len(x), len(y)) + 1): # Upper bound is not inclusive.
         r[-i] = (x[-i] ^ y[-i]) ^ carry
         carry = (x[-i] & y[-i]) | (x[-i] & carry) | (y[-i] & carry)
     r[-(max(len(x), len(y)) + 1)] = carry
 
     return r
 
-def mul(x, y):
+def mul(x: bitlist, y: bitlist) -> bitlist:
     """
     Bitwise multiplication algorithm.
 
     >>> int(mul(bitlist(123), bitlist(456)))
     56088
     """
-    r = bitlist(0)
+    r: bitlist = bitlist(0)
 
-    # Upper bound is not inclusive.
-    # Use negative indices for big-endian interface.
-    for i in range(1, len(x) + 1):
-        if x[-i] == 1:
+    for i in range(1, len(x) + 1): # Upper bound is not inclusive.
+        if x[-i] == 1: # Use negative index to simulate big-endian order of bits.
             r = add(r, y)
         y = y << 1
 
     return r
 
-def exp(x, y):
+def exp(x: bitlist, y: bitlist) -> bitlist:
     """
     Bitwise exponentiation algorithm.
 
     >>> int(exp(bitlist(123), bitlist(5)))
     28153056843
     """
-    r = bitlist(1)
+    r: bitlist = bitlist(1)
 
-    # Upper bound is not inclusive.
-    # Use negative indices for big-endian interface.
-    for i in range(1, len(y) + 1):
-        if y[-i] == 1:
+    for i in range(1, len(y) + 1): # Upper bound is not inclusive.
+        if y[-i] == 1: # Use negative index to simulate big-endian order of bits.
             r = mul(r, x)
         x = mul(x, x)
 
     return r
 
-def div(x, y):
+def div(x: bitlist, y: bitlist) -> bitlist:
     """
     Bitwise integer division algorithm.
 
@@ -85,10 +80,10 @@ def div(x, y):
     for _ in range(0, len(x)):
         y = y << 1
 
-    t = bitlist(0)
-    q = bitlist(0)
-    p = bitlist(2 ** len(x))
-    for _ in range(0, len(x) + 1):
+    t: bitlist = bitlist(0)
+    q: bitlist = bitlist(0)
+    p: bitlist = bitlist(2 ** len(x))
+    for _ in range(0, len(x) + 1): # Upper bound is not inclusive.
         if add(t, y) <= x:
             t = add(t, y)
             q = add(q, p)
