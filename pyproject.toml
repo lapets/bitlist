@@ -1,6 +1,6 @@
 [project]
 name = "bitlist"
-version = "1.0.0"
+version = "1.0.1"
 description = "Pure-Python library for working with bit vectors."
 license = {text = "MIT"}
 authors = [

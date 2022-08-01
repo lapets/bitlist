@@ -41,7 +41,7 @@ Examples
 ^^^^^^^^
 
 .. |bitlist| replace:: ``bitlist``
-.. _bitlist: https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist
+.. _bitlist: https://bitlist.readthedocs.io/en/1.0.1/_source/bitlist.html#bitlist.bitlist.bitlist
 
 This library makes it possible to construct bit vectors from a variety of representations (including integers, bytes-like objects, strings of binary digits, lists of binary digits, and other bit vectors). Integer arguments are converted into a big-endian binary representation::
 
@@ -92,7 +92,7 @@ Bit vectors are iterable sequences of individual bits (where each bit is represe
     >>> list(b.to_bytes())
     [123]
 
-`Concatenation <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__add__>`__, `partitioning <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__truediv__>`__, `subscription and slicing <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__getitem__>`__, `shift and rotation <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__lshift__>`__, `comparison <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__eq__>`__, and `logical <https://bitlist.readthedocs.io/en/1.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__and__>`__ operations are also supported by instances of the |bitlist|_ class. The larger example below -- a bitwise addition function -- illustrates the use of various operators supported by instances of the |bitlist|_ class::
+`Concatenation <https://bitlist.readthedocs.io/en/1.0.1/_source/bitlist.html#bitlist.bitlist.bitlist.__add__>`__, `partitioning <https://bitlist.readthedocs.io/en/1.0.1/_source/bitlist.html#bitlist.bitlist.bitlist.__truediv__>`__, `subscription and slicing <https://bitlist.readthedocs.io/en/1.0.1/_source/bitlist.html#bitlist.bitlist.bitlist.__getitem__>`__, `shift and rotation <https://bitlist.readthedocs.io/en/1.0.1/_source/bitlist.html#bitlist.bitlist.bitlist.__lshift__>`__, `comparison <https://bitlist.readthedocs.io/en/1.0.1/_source/bitlist.html#bitlist.bitlist.bitlist.__eq__>`__, and `logical <https://bitlist.readthedocs.io/en/1.0.1/_source/bitlist.html#bitlist.bitlist.bitlist.__and__>`__ operations are also supported by instances of the |bitlist|_ class. The larger example below -- a bitwise addition function -- illustrates the use of various operators supported by instances of the |bitlist|_ class::
 
     >>> def add(x, y):
     ...     """Bitwise addition algorithm."""
@@ -108,7 +108,7 @@ Bit vectors are iterable sequences of individual bits (where each bit is represe
     >>> int(add(bitlist(123), bitlist(456)))
     579
 
-The `testing script <https://bitlist.readthedocs.io/en/1.0.0/_source/test_bitlist.html>`_ that accompanies this library contains additional examples of bitwise arithmetic operations implemented with the help of |bitlist|_ operators.
+The `testing script <https://bitlist.readthedocs.io/en/1.0.1/_source/test_bitlist.html>`_ that accompanies this library contains additional examples of bitwise arithmetic operations implemented with the help of |bitlist|_ operators.
 
 Development
 -----------

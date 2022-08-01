@@ -219,7 +219,7 @@ class bitlist:
       ...
     TypeError: bitlist constructor received unsupported argument
     """
-    def __init__( # pylint: disable=R0912
+    def __init__(
             self: bitlist,
             argument: Union[int, str, bytes, bytearray, bitlist, Iterable[int], None] = None,
             length: Optional[int] = None
@@ -227,6 +227,7 @@ class bitlist:
         """
         Parse argument depending on its type and build a bit vector instance.
         """
+        # pylint: disable=too-many-branches
         if argument is None:
             # By default, always return the bit vector representing zero.
             self.bits = bytearray([0])
@@ -256,7 +257,7 @@ class bitlist:
 
         elif isinstance(argument, bitlist):
             # Make constructor idempotent (but have it iterate
-            # to reflect the behavior of ``list``.
+            # to reflect the behavior of the :obj:`list` function).
             self.bits = bytearray(list(argument.bits))
 
         elif isinstance(argument, collections.abc.Iterable):

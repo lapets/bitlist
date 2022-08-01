@@ -10,8 +10,8 @@ import doctest
 from unittest import TestCase
 
 try:
-    from bitlist import * # pylint: disable=W0401, W0614
-except: # pylint: disable=W0702
+    from bitlist import bitlist
+except: # pylint: disable=bare-except
     # Support validation of docstrings in this script via its direct execution.
     import sys
     sys.path.append('./bitlist')
@@ -101,31 +101,32 @@ class Test_bitlist(TestCase):
     """
     Tests of algorithms for bitwise operations.
     """
+    # pylint: disable=unnecessary-lambda-assignment
     def test_from_integer(self):
         """Test integer conversion."""
         self.assertEqual(bitlist(123), bitlist('1111011'))
 
     def test_add(self):
         """Test bitwise addition."""
-        op = lambda a, b: int(add(bitlist(a), bitlist(b))) # pylint: disable=C3001
+        op = lambda a, b: int(add(bitlist(a), bitlist(b)))
         for (x, y) in [(a+b, op(a, b)) for a in range(0, 100) for b in range(0, 100)]:
             self.assertEqual(x, y)
 
     def test_mul(self):
         """Test bitwise multiplication."""
-        op = lambda a, b: int(mul(bitlist(a), bitlist(b))) # pylint: disable=C3001
+        op = lambda a, b: int(mul(bitlist(a), bitlist(b)))
         for (x, y) in [(a*b, op(a, b)) for a in range(0, 30) for b in range(0, 30)]:
             self.assertEqual(x, y)
 
     def test_exp(self):
         """Test bitwise exponentiation."""
-        op = lambda a, b: int(exp(bitlist(a), bitlist(b))) # pylint: disable=C3001
+        op = lambda a, b: int(exp(bitlist(a), bitlist(b)))
         for (x, y) in [(a**b, op(a, b)) for a in range(0, 12) for b in range(0, 4)]:
             self.assertEqual(x, y)
 
     def test_div(self):
         """Test bitwise division."""
-        op = lambda a, b: int(div(bitlist(a), bitlist(b))) # pylint: disable=C3001
+        op = lambda a, b: int(div(bitlist(a), bitlist(b)))
         for (x, y) in [(a//b, op(a, b)) for a in range(0, 12) for b in range(1, 12)]:
             self.assertEqual(x, y)
 
