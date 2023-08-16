@@ -1,6 +1,6 @@
 [project]
 name = "bitlist"
-version = "1.1.0"
+version = "1.2.0"
 description = "Pure-Python library for working with bit vectors."
 license = {text = "MIT"}
 authors = [
@@ -10,7 +10,7 @@ authors = [
 readme = "README.rst"
 requires-python = ">=3.7"
 dependencies = [
-    "parts~=1.6"
+    "parts~=1.7"
 ]
 
 [project.urls]
