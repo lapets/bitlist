@@ -6,7 +6,7 @@ Pure-Python library for working with bit vectors.
 
 |pypi| |readthedocs| |actions| |coveralls|
 
-.. |pypi| image:: https://badge.fury.io/py/bitlist.svg
+.. |pypi| image:: https://badge.fury.io/py/bitlist.svg#
    :target: https://badge.fury.io/py/bitlist
    :alt: PyPI version and link.
 
@@ -14,7 +14,7 @@ Pure-Python library for working with bit vectors.
    :target: https://bitlist.readthedocs.io/en/latest/?badge=latest
    :alt: Read the Docs documentation status.
 
-.. |actions| image:: https://github.com/lapets/bitlist/workflows/lint-test-cover-docs/badge.svg
+.. |actions| image:: https://github.com/lapets/bitlist/workflows/lint-test-cover-docs/badge.svg#
    :target: https://github.com/lapets/bitlist/actions/workflows/lint-test-cover-docs.yml
    :alt: GitHub Actions status.
 
@@ -45,7 +45,7 @@ Examples
 ^^^^^^^^
 
 .. |bitlist| replace:: ``bitlist``
-.. _bitlist: https://bitlist.readthedocs.io/en/1.1.0/_source/bitlist.html#bitlist.bitlist.bitlist
+.. _bitlist: https://bitlist.readthedocs.io/en/2.0.0/_source/bitlist.html#bitlist.bitlist.bitlist
 
 This library makes it possible to construct bit vectors from a variety of representations (including integers, bytes-like objects, strings of binary digits, lists of binary digits, and other bit vectors). Integer arguments are converted into a big-endian binary representation:
 
@@ -104,7 +104,7 @@ Bit vectors are iterable sequences of individual bits (where each bit is represe
     >>> list(b.to_bytes())
     [123]
 
-`Concatenation <https://bitlist.readthedocs.io/en/1.1.0/_source/bitlist.html#bitlist.bitlist.bitlist.__add__>`__, `partitioning <https://bitlist.readthedocs.io/en/1.1.0/_source/bitlist.html#bitlist.bitlist.bitlist.__truediv__>`__, `subscription and slicing <https://bitlist.readthedocs.io/en/1.1.0/_source/bitlist.html#bitlist.bitlist.bitlist.__getitem__>`__, `shift and rotation <https://bitlist.readthedocs.io/en/1.1.0/_source/bitlist.html#bitlist.bitlist.bitlist.__lshift__>`__, `comparison <https://bitlist.readthedocs.io/en/1.1.0/_source/bitlist.html#bitlist.bitlist.bitlist.__eq__>`__, and `logical <https://bitlist.readthedocs.io/en/1.1.0/_source/bitlist.html#bitlist.bitlist.bitlist.__and__>`__ operations are also supported by instances of the |bitlist|_ class. The larger example below -- a bitwise addition function -- illustrates the use of various operators supported by instances of the |bitlist|_ class:
+`Concatenation <https://bitlist.readthedocs.io/en/2.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__add__>`__, `partitioning <https://bitlist.readthedocs.io/en/2.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__truediv__>`__, `subscription and slicing <https://bitlist.readthedocs.io/en/2.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__getitem__>`__, `shift and rotation <https://bitlist.readthedocs.io/en/2.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__lshift__>`__, `comparison <https://bitlist.readthedocs.io/en/2.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__eq__>`__, and `logical <https://bitlist.readthedocs.io/en/2.0.0/_source/bitlist.html#bitlist.bitlist.bitlist.__and__>`__ operations are also supported by instances of the |bitlist|_ class. The larger example below -- a bitwise addition function -- illustrates the use of various operators supported by instances of the |bitlist|_ class:
 
 .. code-block:: python
 
@@ -122,7 +122,7 @@ Bit vectors are iterable sequences of individual bits (where each bit is represe
     >>> int(add(bitlist(123), bitlist(456)))
     579
 
-The `testing script <https://bitlist.readthedocs.io/en/1.1.0/_source/test_bitlist.html>`_ that accompanies this library contains additional examples of bitwise arithmetic operations implemented with the help of |bitlist|_ operators.
+The `testing script <https://bitlist.readthedocs.io/en/2.0.0/_source/test_bitlist.html>`__ that accompanies this library contains additional examples of bitwise arithmetic operations implemented with the help of |bitlist|_ operators.
 
 Development
 -----------
@@ -130,7 +130,7 @@ All installation and development dependencies are fully specified in ``pyproject
 
 .. code-block:: bash
 
-    python -m pip install .[docs,lint]
+    python -m pip install ".[docs,lint]"
 
 Documentation
 ^^^^^^^^^^^^^
@@ -138,7 +138,7 @@ The documentation can be generated automatically from the source files using `Sp
 
 .. code-block:: bash
 
-    python -m pip install .[docs]
+    python -m pip install ".[docs]"
     cd docs
     sphinx-apidoc -f -E --templatedir=_templates -o _source .. && make html
 
@@ -148,10 +148,10 @@ All unit tests are executed and their coverage is measured when using `pytest <h
 
 .. code-block:: bash
 
-    python -m pip install .[test]
+    python -m pip install ".[test]"
     python -m pytest
 
-The subset of the unit tests included in the module itself and the *documentation examples* that appear in the testing script can be executed separately using `doctest <https://docs.python.org/3/library/doctest.html>`_:
+The subset of the unit tests included in the module itself and the *documentation examples* that appear in the testing script can be executed separately using `doctest <https://docs.python.org/3/library/doctest.html>`__:
 
 .. code-block:: bash
 
@@ -162,7 +162,7 @@ Style conventions are enforced using `Pylint <https://pylint.readthedocs.io>`__:
 
 .. code-block:: bash
 
-    python -m pip install .[lint]
+    python -m pip install ".[lint]"
     python -m pylint src/bitlist test/test_bitlist.py
 
 Contributions
@@ -175,28 +175,13 @@ Beginning with version 0.3.0, the version number format for this library and the
 
 Publishing
 ^^^^^^^^^^
-This library can be published as a `package on PyPI <https://pypi.org/project/bitlist>`__ by a package maintainer. First, install the dependencies required for packaging and publishing:
+This library can be published as a `package on PyPI <https://pypi.org/project/bitlist>`__ via the GitHub Actions workflow found in ``.github/workflows/build-publish-sign-release.yml`` that follows the `recommendations found in the Python Packaging User Guide <https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/>`__.
 
-.. code-block:: bash
+Ensure that the correct version number appears in ``pyproject.toml``, and that any links in this README document to the Read the Docs documentation of this package (or its dependencies) have appropriate version numbers. Also ensure that the Read the Docs project for this library has an `automation rule <https://docs.readthedocs.io/en/stable/automation-rules.html>`__ that activates and sets as the default all tagged versions.
 
-    python -m pip install .[publish]
-
-Ensure that the correct version number appears in ``pyproject.toml``, and that any links in this README document to the Read the Docs documentation of this package (or its dependencies) have appropriate version numbers. Also ensure that the Read the Docs project for this library has an `automation rule <https://docs.readthedocs.io/en/stable/automation-rules.html>`__ that activates and sets as the default all tagged versions. Create and push a tag for this version (replacing ``?.?.?`` with the version number):
+To publish the package, create and push a tag for the version being published (replacing ``?.?.?`` with the version number):
 
 .. code-block:: bash
 
     git tag ?.?.?
     git push origin ?.?.?
-
-Remove any old build/distribution files. Then, package the source into a distribution archive:
-
-.. code-block:: bash
-
-    rm -rf build dist src/*.egg-info
-    python -m build --sdist --wheel .
-
-Finally, upload the package distribution archive to `PyPI <https://pypi.org>`__:
-
-.. code-block:: bash
-
-    python -m twine upload dist/*
