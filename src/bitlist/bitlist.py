@@ -13,6 +13,10 @@ class bitlist:
     variety of input types (including integers, bytes-like objects, strings
     of binary digits, iterables of binary digits, and other :obj:`bitlist`
     instances) and parses them in an appropriate manner to build a bit vector.
+
+    :param argument: Value or instance to convert into a bit vector.
+    :param length: Number of bits in the bit vector being created.
+
     Integer arguments are converted into a big-endian binary representation.
 
     >>> bitlist(1)
@@ -248,12 +252,11 @@ class bitlist:
             # Convert bytes-like object into its constituent bits,
             # with exactly eight bits per byte (i.e., leading zeros
             # are included).
-            self.bits = \
-                bytearray([
-                    b
-                    for byte in reversed(argument)
-                    for b in [(byte >> i) % 2 for i in range(0, 8)]
-                ])
+            self.bits = bytearray([
+                b
+                for byte in reversed(argument)
+                for b in [(byte >> i) % 2 for i in range(0, 8)]
+            ])
 
         elif isinstance(argument, bitlist):
             # Make constructor idempotent (but have it iterate
@@ -300,10 +303,9 @@ class bitlist:
         >>> bitlist('01')
         bitlist('01')
         """
-        return \
-            'bitlist(' + \
-            (("'" + self.bin() + "'") if len(self.bits) > 0 else '') + \
-            ')'
+        return 'bitlist(' + (
+            ("'" + self.bin() + "'") if len(self.bits) > 0 else ''
+        ) + ')'
 
     def __repr__(self: bitlist) -> str:
         """
@@ -478,18 +480,16 @@ class bitlist:
         IndexError: bitlist index out of range
         """
         if i < 0: # Support big-endian interface using negative indices.
-            self.bits = \
-                bytearray([
-                    (self[j] if j != i else b)
-                    for j in range(-1, min(-len(self.bits), -abs(i)) - 1, -1)
-                ])
+            self.bits = bytearray([
+                (self[j] if j != i else b)
+                for j in range(-1, min(-len(self.bits), -abs(i)) - 1, -1)
+            ])
         elif i < len(self.bits):
             i = len(self.bits) - 1 - i
-            self.bits = \
-                bytearray([
-                    (self.bits[j] if j != i else b)
-                    for j in range(0, len(self.bits))
-                ])
+            self.bits = bytearray([
+                (self.bits[j] if j != i else b)
+                for j in range(0, len(self.bits))
+            ])
         else:
             raise IndexError('bitlist index out of range')
 
